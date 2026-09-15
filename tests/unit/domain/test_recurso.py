@@ -12,7 +12,8 @@ class RecursoTestCase(unittest.TestCase):
         recurso = Recurso(
             id="R001",
             nombre="Nombre del recurso",
-            tipo="Tipo del recurso"
+            tipo="Tipo del recurso",
+            archivo = "ruta/del/archivo.pdf"
         )
         self.assertIsInstance(recurso, Recurso)
         self.assertEqual(recurso.id, "R001")
