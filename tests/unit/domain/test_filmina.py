@@ -17,12 +17,14 @@ class FilminaTestCase(unittest.TestCase):
             id="F001",
             descripcion="Descripcion de prueba",
             fecha=date(1977, 4, 20),
+            procedencia=ProcedenciaFilmina.BLAA
         )   
 
         self.assertIsInstance(filmina, Filmina)
         self.assertEqual(filmina.id, "F001")
         self.assertEqual(filmina.descripcion, "Descripcion de prueba")
         self.assertEqual(filmina.fecha, date(1977, 4, 20))
+        self.assertEqual(filmina.procedencia, ProcedenciaFilmina.BLAA)
 
     def test_procedencia_filmina(self):
         self.assertEqual(ProcedenciaFilmina.BLAA.value, "BLAA")
