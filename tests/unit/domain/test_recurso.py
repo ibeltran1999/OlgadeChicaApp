@@ -13,13 +13,13 @@ class RecursoTestCase(unittest.TestCase):
         recurso = Recurso(
             id="R001",
             nombre="Nombre del recurso",
-            tipo="Tipo del recurso",
+            tipo= TipoRecurso.OBRA_FISICA.value,
             archivo = "ruta/del/archivo.pdf"
         )
         self.assertIsInstance(recurso, Recurso)
         self.assertEqual(recurso.id, "R001")
         self.assertEqual(recurso.nombre, "Nombre del recurso")
-        self.assertEqual(recurso.tipo, "Tipo del recurso")
+        self.assertEqual(recurso.tipo, TipoRecurso.OBRA_FISICA.value)
 
     def test_tipo_recurso(self):
         self.assertEqual(TipoRecurso.OBRA_FISICA.value, "Obra fisica")
