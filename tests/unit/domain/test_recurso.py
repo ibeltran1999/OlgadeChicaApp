@@ -2,6 +2,7 @@ import unittest
 from faker import Faker
 from datetime import date
 from app.domain import Recurso
+from app.domain.enums import TipoRecurso
 
 class RecursoTestCase(unittest.TestCase):
 
@@ -19,4 +20,8 @@ class RecursoTestCase(unittest.TestCase):
         self.assertEqual(recurso.id, "R001")
         self.assertEqual(recurso.nombre, "Nombre del recurso")
         self.assertEqual(recurso.tipo, "Tipo del recurso")
+
+    def test_tipo_recurso(self):
+        self.assertEqual(TipoRecurso.OBRA_FISICA.value, "Obra fisica")
+
         
