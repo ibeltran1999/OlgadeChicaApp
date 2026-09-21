@@ -3,6 +3,7 @@ from faker import Faker
 from datetime import date
 from app.domain import Tag
 
+
 class TagTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -10,8 +11,8 @@ class TagTestCase(unittest.TestCase):
 
     def test_crear_tag(self):
         tag = Tag(
-            id = "T001",
-            nombre = "Nombre del tag",
+            id="T001",
+            nombre="Nombre del tag",
         )
 
         self.assertIsInstance(tag, Tag)

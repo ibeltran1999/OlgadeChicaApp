@@ -4,6 +4,7 @@ from datetime import date
 from app.domain import Recurso
 from app.domain.enums import TipoRecurso
 
+
 class RecursoTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -13,8 +14,8 @@ class RecursoTestCase(unittest.TestCase):
         recurso = Recurso(
             id="R001",
             nombre="Nombre del recurso",
-            tipo= TipoRecurso.OBRA_FISICA.value,
-            archivo = "ruta/del/archivo.pdf"
+            tipo=TipoRecurso.OBRA_FISICA.value,
+            archivo="ruta/del/archivo.pdf",
         )
         self.assertIsInstance(recurso, Recurso)
         self.assertEqual(recurso.id, "R001")
@@ -23,5 +24,3 @@ class RecursoTestCase(unittest.TestCase):
 
     def test_tipo_recurso(self):
         self.assertEqual(TipoRecurso.OBRA_FISICA.value, "Obra fisica")
-
-        

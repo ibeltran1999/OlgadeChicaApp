@@ -2,8 +2,9 @@ from app.domain import Boceto
 import unittest
 from datetime import date
 
+
 class BocetoTestCase(unittest.TestCase):
-    
+
     def setUp(self):
         return
 

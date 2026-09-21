@@ -7,6 +7,7 @@ from app.domain.enums import ProcedenciaFilmina
 faker = Faker("es_CO")
 Faker.seed(1000)
 
+
 class FilminaTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -17,8 +18,8 @@ class FilminaTestCase(unittest.TestCase):
             id="F001",
             descripcion="Descripcion de prueba",
             fecha=date(1977, 4, 20),
-            procedencia=ProcedenciaFilmina.BLAA
-        )   
+            procedencia=ProcedenciaFilmina.BLAA,
+        )
 
         self.assertIsInstance(filmina, Filmina)
         self.assertEqual(filmina.id, "F001")

@@ -1,6 +1,7 @@
 import unittest
 from app.domain import Archivo
 
+
 class ArchivoTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -16,5 +17,3 @@ class ArchivoTestCase(unittest.TestCase):
         self.assertEqual(archivo.ruta, "ruta/del/archivo.pdf")
         self.assertEqual(archivo.nombre, "Nombre del archivo")
         self.assertEqual(archivo.tipo, "Tipo del archivo")
-
-
