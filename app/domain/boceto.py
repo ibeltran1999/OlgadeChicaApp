@@ -3,3 +3,4 @@ class Boceto:
         self.id = id
         self.descripcion = descripcion
         self.fecha = fecha
+        self.filminas = []

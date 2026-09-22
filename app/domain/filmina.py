@@ -4,3 +4,11 @@ class Filmina:
         self.descripcion = descripcion
         self.fecha = fecha
         self.procedencia = procedencia
+        self.bocetos = []
+
+    def agregar_boceto(self, boceto):
+        if boceto not in self.bocetos:
+            self.bocetos.append(boceto)
+
+        if self not in boceto.filminas:
+            boceto.filminas.append(self)
