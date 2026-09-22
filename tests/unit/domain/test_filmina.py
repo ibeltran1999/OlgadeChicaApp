@@ -49,7 +49,7 @@ class FilminaTestCase(unittest.TestCase):
             )
         self.datos_tags = []
 
-        for i in range(0,10):
+        for i in range(0, 10):
             self.datos_tags.append(
                 {
                     "identificador": f"T{i+1:03d}",
@@ -142,10 +142,7 @@ class FilminaTestCase(unittest.TestCase):
         datos_filmina_1 = self.datos_filminas[0]
         datos_3_tags = self.datos_tags[0:3]
         tags = [
-            Tag(
-                identificador = datos["identificador"],
-                nombre=datos["nombre"]
-            )
+            Tag(identificador=datos["identificador"], nombre=datos["nombre"])
             for datos in datos_3_tags
         ]
         filmina_1 = Filmina(
@@ -162,4 +159,3 @@ class FilminaTestCase(unittest.TestCase):
 
         for tag in tags:
             self.assertIn(tag, filmina_1.tags)
-        

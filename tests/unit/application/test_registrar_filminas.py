@@ -6,6 +6,7 @@ from app.domain import Filmina, Archivo
 from app.application.registrar_filmina import RegistrarFilmina
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
 
+
 class RepositorioFilminasEnMemoria:
     def __init__(self):
         self.filminas = []
@@ -13,10 +14,12 @@ class RepositorioFilminasEnMemoria:
     def guardar(self, filmina):
         self.filminas.append(filmina)
 
+
 class GeneradorIdentificadoresEnMemoria:
     def generar_identificador_filmina(self):
         return "F001"
-    
+
+
 class RegistrarFilminaTestCase(unittest.TestCase):
     def setUp(self):
         self.data_factory = Faker("es_CO")
@@ -69,15 +72,16 @@ class RegistrarFilminaTestCase(unittest.TestCase):
         filmina = caso_de_uso.ejecutar(
             descripcion=datos_filmina_1["descripcion"],
             fecha=datos_filmina_1["fecha"],
-            procedencia= datos_filmina_1["procedencia"]
+            procedencia=datos_filmina_1["procedencia"],
         )
 
         self.assertIsInstance(filmina, Filmina)
         self.assertEqual(filmina.identificador, "F001")
         self.assertEqual(filmina.descripcion, datos_filmina_1["descripcion"])
         self.assertEqual(filmina.fecha, datos_filmina_1["fecha"])
-        self.assertEqual(filmina.procedencia, ProcedenciaFilmina(datos_filmina_1["procedencia"]))
+        self.assertEqual(
+            filmina.procedencia, ProcedenciaFilmina(datos_filmina_1["procedencia"])
+        )
         self.assertIsNone(filmina.archivo)
         self.assertEqual(len(repositorio.filminas), 1)
         self.assertIs(repositorio.filminas[0], filmina)
-

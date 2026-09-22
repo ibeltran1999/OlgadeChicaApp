@@ -1,6 +1,7 @@
 from app.domain import Filmina
 from app.domain.enums import ProcedenciaFilmina
 
+
 class RegistrarFilmina:
     def __init__(self, repositorio, generador):
         self.repositorio = repositorio
@@ -12,11 +13,9 @@ class RegistrarFilmina:
             identificador=identificador,
             descripcion=descripcion,
             fecha=fecha,
-            procedencia=ProcedenciaFilmina(procedencia)
+            procedencia=ProcedenciaFilmina(procedencia),
         )
 
         self.repositorio.guardar(filmina)
 
         return filmina
-
-
