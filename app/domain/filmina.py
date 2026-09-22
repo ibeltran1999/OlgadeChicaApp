@@ -1,6 +1,6 @@
 class Filmina:
-    def __init__(self, id, descripcion, fecha, procedencia):
-        self.id = id
+    def __init__(self, identificador, descripcion, fecha, procedencia):
+        self.identificador = identificador
         self.descripcion = descripcion
         self.fecha = fecha
         self.procedencia = procedencia

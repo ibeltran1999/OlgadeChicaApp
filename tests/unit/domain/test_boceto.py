@@ -10,11 +10,11 @@ class BocetoTestCase(unittest.TestCase):
 
     def test_crear_boceto(self):
         boceto = Boceto(
-            id="B001",
+            identificador="B001",
             descripcion="Descripcion de prueba",
             fecha=date(1977, 4, 20),
         )
         self.assertIsInstance(boceto, Boceto)
-        self.assertEqual(boceto.id, "B001")
+        self.assertEqual(boceto.identificador, "B001")
         self.assertEqual(boceto.descripcion, "Descripcion de prueba")
         self.assertEqual(boceto.fecha, date(1977, 4, 20))

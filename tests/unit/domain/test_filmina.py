@@ -18,7 +18,7 @@ class FilminaTestCase(unittest.TestCase):
         for i in range(0, 10):
             self.datos_filminas.append(
                 {
-                    "id": f"F{i+1:03d}",
+                    "identificador": f"F{i+1:03d}",
                     "descripcion": self.data_factory.sentence(),
                     "fecha": self.data_factory.date_object(),
                     "procedencia": self.data_factory.random_element(procedencias),
@@ -29,7 +29,7 @@ class FilminaTestCase(unittest.TestCase):
         for i in range(0, 10):
             self.datos_bocetos.append(
                 {
-                    "id": f"B{i + 1:03d}",
+                    "identificador": f"B{i + 1:03d}",
                     "descripcion": self.data_factory.sentence(),
                     "fecha": self.data_factory.date_object(),
                 }
@@ -51,14 +51,14 @@ class FilminaTestCase(unittest.TestCase):
     def test_crear_filmina(self):
         datos_filmina_1 = self.datos_filminas[0]
         filmina = Filmina(
-            id=datos_filmina_1["id"],
+            identificador=datos_filmina_1["identificador"],
             descripcion=datos_filmina_1["descripcion"],
             fecha=datos_filmina_1["fecha"],
             procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
         )
 
         self.assertIsInstance(filmina, Filmina)
-        self.assertEqual(filmina.id, datos_filmina_1["id"])
+        self.assertEqual(filmina.identificador, datos_filmina_1["identificador"])
         self.assertEqual(filmina.descripcion, datos_filmina_1["descripcion"])
         self.assertEqual(filmina.fecha, datos_filmina_1["fecha"])
         self.assertEqual(
@@ -73,14 +73,14 @@ class FilminaTestCase(unittest.TestCase):
         datos_boceto_1 = self.datos_bocetos[0]
 
         filmina_1 = Filmina(
-            id=datos_filmina_1["id"],
+            identificador=datos_filmina_1["identificador"],
             descripcion=datos_filmina_1["descripcion"],
             fecha=datos_filmina_1["fecha"],
             procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
         )
 
         boceto_1 = Boceto(
-            id=datos_boceto_1["id"],
+            identificador=datos_boceto_1["identificador"],
             descripcion=datos_boceto_1["descripcion"],
             fecha=datos_boceto_1["fecha"],
         )
@@ -98,7 +98,7 @@ class FilminaTestCase(unittest.TestCase):
         datos_filmina = self.datos_filminas[0]
 
         filmina = Filmina(
-            id=datos_filmina["id"],
+            identificador=datos_filmina["identificador"],
             descripcion=datos_filmina["descripcion"],
             fecha=datos_filmina["fecha"],
             procedencia=ProcedenciaFilmina(datos_filmina["procedencia"]),
@@ -112,7 +112,7 @@ class FilminaTestCase(unittest.TestCase):
         datos_archivo_1 = self.datos_archivos[0]
 
         filmina_1 = Filmina(
-            id=datos_filmina_1["id"],
+            identificador=datos_filmina_1["identificador"],
             descripcion=datos_filmina_1["descripcion"],
             fecha=datos_filmina_1["fecha"],
             procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
