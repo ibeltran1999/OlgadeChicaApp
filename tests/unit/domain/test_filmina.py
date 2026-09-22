@@ -1,7 +1,7 @@
 import unittest
 from faker import Faker
 from datetime import date
-from app.domain import Filmina, Boceto, Archivo
+from app.domain import Filmina, Boceto, Archivo, filmina
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
 
 
@@ -34,7 +34,6 @@ class FilminaTestCase(unittest.TestCase):
                     "fecha": self.data_factory.date_object(),
                 }
             )
-
 
         self.datos_archivos = []
         for i in range(0, 10):
@@ -95,6 +94,19 @@ class FilminaTestCase(unittest.TestCase):
         self.assertIs(filmina_1.bocetos[0], boceto_1)
         self.assertIs(boceto_1.filminas[0], filmina_1)
 
+    def test_crear_filmina_sin_archivo(self):
+        datos_filmina = self.datos_filminas[0]
+
+        filmina = Filmina(
+            id=datos_filmina["id"],
+            descripcion=datos_filmina["descripcion"],
+            fecha=datos_filmina["fecha"],
+            procedencia=ProcedenciaFilmina(datos_filmina["procedencia"]),
+        )
+
+        self.assertIsInstance(filmina, Filmina)
+        self.assertIsNone(filmina.archivo)
+
     def test_asociar_archivo_a_filmina(self):
         datos_filmina_1 = self.datos_filminas[0]
         datos_archivo_1 = self.datos_archivos[0]
@@ -116,7 +128,3 @@ class FilminaTestCase(unittest.TestCase):
 
         self.assertIs(filmina_1.archivo, archivo_1)
         self.assertIsInstance(filmina_1.archivo, Archivo)
-
-
-
-
