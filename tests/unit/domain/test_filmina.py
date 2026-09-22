@@ -196,5 +196,15 @@ class FilminaTestCase(unittest.TestCase):
                 procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
             )
 
+    def test_no_permitir_crear_filmina_sin_procedencia(self):
+        datos_filmina_1 = self.datos_filminas[0]
+        with self.assertRaises(ValueError):
+            Filmina(
+                identificador=datos_filmina_1["identificador"],
+                descripcion=datos_filmina_1["descripcion"],
+                fecha=datos_filmina_1["fecha"],
+                procedencia=None,
+            )
+
 
         
