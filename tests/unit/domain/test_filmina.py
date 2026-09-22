@@ -57,7 +57,7 @@ class FilminaTestCase(unittest.TestCase):
                 }
             )
 
-    def test_crear_filmina(self):
+    def test_permitir_crear_filmina(self):
         datos_filmina_1 = self.datos_filminas[0]
         filmina = Filmina(
             identificador=datos_filmina_1["identificador"],
@@ -77,7 +77,7 @@ class FilminaTestCase(unittest.TestCase):
     def test_procedencia_filmina(self):
         self.assertEqual(ProcedenciaFilmina.BLAA.value, "BLAA")
 
-    def test_relacionar_una_filmina_con_un_boceto(self):
+    def test_permitir_relacionar_una_filmina_con_un_boceto(self):
         datos_filmina_1 = self.datos_filminas[0]
         datos_boceto_1 = self.datos_bocetos[0]
 
@@ -103,7 +103,7 @@ class FilminaTestCase(unittest.TestCase):
         self.assertIs(filmina_1.bocetos[0], boceto_1)
         self.assertIs(boceto_1.filminas[0], filmina_1)
 
-    def test_crear_filmina_sin_archivo(self):
+    def test_permitir_crear_filmina_sin_archivo(self):
         datos_filmina = self.datos_filminas[0]
 
         filmina = Filmina(
@@ -116,7 +116,7 @@ class FilminaTestCase(unittest.TestCase):
         self.assertIsInstance(filmina, Filmina)
         self.assertIsNone(filmina.archivo)
 
-    def test_asociar_archivo_a_filmina(self):
+    def test_permitir_asociar_archivo_a_filmina(self):
         datos_filmina_1 = self.datos_filminas[0]
         datos_archivo_1 = self.datos_archivos[0]
 
@@ -138,7 +138,7 @@ class FilminaTestCase(unittest.TestCase):
         self.assertIs(filmina_1.archivo, archivo_1)
         self.assertIsInstance(filmina_1.archivo, Archivo)
 
-    def test_asociar_tres_tags_a_filmina(self):
+    def test_permitir_asociar_tres_tags_a_filmina(self):
         datos_filmina_1 = self.datos_filminas[0]
         datos_3_tags = self.datos_tags[0:3]
         tags = [
@@ -185,6 +185,16 @@ class FilminaTestCase(unittest.TestCase):
             filmina_1.agregar_tag(tag4)
 
         self.assertEqual(len(filmina_1.tags), 3)
+
+    def test_no_permitir_crear_filmina_sin_descripcion(self):
+        datos_filmina_1 = self.datos_filminas[0]
+        with self.assertRaises(ValueError):
+            Filmina(
+                identificador=datos_filmina_1["identificador"],
+                descripcion=None,
+                fecha=datos_filmina_1["fecha"],
+                procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
+            )
 
 
         
