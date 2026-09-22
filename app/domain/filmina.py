@@ -1,5 +1,7 @@
 class Filmina:
     def __init__(self, identificador, descripcion, fecha, procedencia):
+        if not descripcion:
+            raise ValueError("La descripcion es obligatoria") 
         self.identificador = identificador
         self.descripcion = descripcion
         self.fecha = fecha
