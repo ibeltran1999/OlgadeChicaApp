@@ -1,7 +1,7 @@
 import unittest
 from faker import Faker
 from datetime import date
-from app.domain import Filmina, Boceto, Archivo, filmina
+from app.domain import Filmina, Boceto, Archivo, Tag
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
 
 
@@ -45,6 +45,15 @@ class FilminaTestCase(unittest.TestCase):
                     "ruta": f"archivos/{nombre}",
                     "nombre": nombre,
                     "tipo": TipoArchivo(tipo),
+                }
+            )
+        self.datos_tags = []
+
+        for i in range(0,10):
+            self.datos_tags.append(
+                {
+                    "identificador": f"T{i+1:03d}",
+                    "nombre": self.data_factory.word(),
                 }
             )
 
@@ -128,3 +137,29 @@ class FilminaTestCase(unittest.TestCase):
 
         self.assertIs(filmina_1.archivo, archivo_1)
         self.assertIsInstance(filmina_1.archivo, Archivo)
+
+    def test_asociar_tres_tags_a_filmina(self):
+        datos_filmina_1 = self.datos_filminas[0]
+        datos_3_tags = self.datos_tags[0:3]
+        tags = [
+            Tag(
+                identificador = datos["identificador"],
+                nombre=datos["nombre"]
+            )
+            for datos in datos_3_tags
+        ]
+        filmina_1 = Filmina(
+            identificador=datos_filmina_1["identificador"],
+            descripcion=datos_filmina_1["descripcion"],
+            fecha=datos_filmina_1["fecha"],
+            procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
+        )
+
+        for tag in tags:
+            filmina_1.agregar_tag(tag)
+
+        self.assertEqual(len(filmina_1.tags), 3)
+
+        for tag in tags:
+            self.assertIn(tag, filmina_1.tags)
+        
