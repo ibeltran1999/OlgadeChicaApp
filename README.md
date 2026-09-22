@@ -39,7 +39,7 @@ Persistencia
 * **Presentación:** interfaz de usuario, vistas y controladores.
 * **Aplicación:** implementación de los casos de uso y gestión de las funcionalidades.
 * **Dominio:** entidades y reglas propias del problema.
-* **Persistencia:** almacenamiento de metadatos, relaciones y archivos digitales.
+* **Persistencia:** almacenamiento de metadatos, relaciones y archivos digitales en el sistema de archivos local.
 
 La arquitectura busca mantener separadas las responsabilidades y permitir que las decisiones de infraestructura no condicionen el modelo del dominio.
 
@@ -56,6 +56,26 @@ Las principales entidades del dominio son:
 * `Archivo`
 
 Una **Selección** no se modela como una entidad del dominio. Se considera una funcionalidad de la capa de aplicación que permite agrupar y consultar materiales existentes de la colección.
+
+### Reglas de `Filmina`
+
+Una `Filmina` contiene:
+
+* un identificador de negocio;
+* una descripción obligatoria;
+* una fecha;
+* una procedencia obligatoria;
+* un archivo digital opcional;
+* hasta tres tags, sin repetirlos;
+* bocetos relacionados.
+
+El archivo digital puede asociarse posteriormente cuando esté disponible. La entidad `Archivo` representa sus metadatos y su ruta relativa; el contenido binario se administra en la capa de persistencia.
+
+### Caso de uso `RegistrarFilmina`
+
+`RegistrarFilmina` pertenece a la capa de aplicación. Su método `ejecutar` recibe los datos del registro, solicita al generador el identificador de negocio, crea la entidad `Filmina` y la entrega al repositorio para guardarla.
+
+El caso de uso no depende de una implementación concreta de almacenamiento. En las pruebas unitarias se utiliza un repositorio en memoria; en producción se utilizará un repositorio conectado a la persistencia de la aplicación.
 
 ### Separación entre dominio y persistencia
 
@@ -145,13 +165,38 @@ Más información: [Pruebas](../../wiki/Pruebas)
 
 El desarrollo de la entidad `Filmina` comenzó definiendo su comportamiento mínimo.
 
-Una Filmina debe poder ser creada como una instancia de la entidad de dominio con:
+Una Filmina puede ser creada como una instancia de la entidad de dominio con su identificador de negocio, descripción, fecha y procedencia. El archivo es opcional y los tags y bocetos se asocian mediante comportamientos del dominio.
 
-* un identificador;
-* una descripción de la fotografía;
-* una fecha.
+El identificador de negocio es diferente del identificador técnico que posteriormente pueda asignar la base de datos. El usuario no diligencia ninguno de los dos.
 
-Otros elementos de la Filmina, como procedencia, archivo fotográfico, tags, bocetos relacionados y recursos relacionados, se incorporarán progresivamente mediante nuevos comportamientos y pruebas.
+## Almacenamiento de archivos
+
+Los archivos digitales se guardan en el sistema de archivos local del computador donde se ejecuta Flask. La capa de persistencia administra el contenido binario y devuelve una entidad `Archivo` con sus metadatos.
+
+La ruta física esperada es:
+
+```text
+instance/
+└── storage/
+        └── filminas/
+                └── F001/
+                        └── archivo.jpg
+```
+
+`Archivo.ruta` conserva una ruta relativa, por ejemplo:
+
+```text
+filminas/F001/archivo.jpg
+```
+
+La ruta absoluta se construye a partir de la carpeta de almacenamiento configurada por la aplicación. No se guardan rutas absolutas del computador del usuario en el dominio ni en la base de datos.
+
+El almacenamiento de archivos y el almacenamiento de metadatos son responsabilidades de persistencia diferentes:
+
+```text
+Contenido binario  → sistema de archivos local
+Metadatos y relaciones → SQLite mediante SQLAlchemy
+```
 
 ## Datos de prueba
 
@@ -175,22 +220,21 @@ Los fixtures generan datos de prueba; no representan directamente las entidades 
 plataforma-olga/
 │
 ├── app/
-│   ├── presentation/
-│   │   ├── controllers/
-│   │   ├── templates/
-│   │   └── static/
 │   ├── application/
+│   │   └── registrar_filmina.py
 │   ├── domain/
+│   │   ├── archivo.py
+│   │   ├── enums.py
+│   │   ├── filmina.py
+│   │   └── tag.py
 │   └── persistence/
-│       ├── models/
-│       └── repositories/
+│       └── almacenamiento_archivos_local.py
 │
 ├── tests/
 │   ├── unit/
 │   ├── integration/
 │   └── functional/
 │
-├── migrations/
 ├── instance/
 ├── requirements.txt
 ├── .env.example
@@ -229,6 +273,12 @@ Desde la raíz del proyecto:
 ```bash
 python -m unittest discover tests -v
 ```
+
+Las pruebas unitarias se ejecutan sin depender de una base de datos real. Para probar el almacenamiento local se utiliza un directorio temporal, que se elimina al terminar cada prueba. Las pruebas de integración utilizarán una base de datos de prueba para verificar la interacción con SQLAlchemy.
+
+## Integración continua
+
+El workflow de GitHub Actions ejecuta Black y la suite de pruebas cuando se hace `push` a `main` o a una rama `feature/**`.
 
 ## Documentación
 
