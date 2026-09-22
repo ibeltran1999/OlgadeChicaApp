@@ -9,3 +9,10 @@ class ProcedenciaFilmina(Enum):
 class TipoRecurso(Enum):
     OBRA_FISICA = "Obra fisica"
     FILMINA_BIBLIOTECA = "Filmina biblioteca"
+
+
+class TipoArchivo(Enum):
+    PDF = "PDF"
+    JPG = "JPG"
+    PNG = "PNG"
+    CR2 = "CR2"
