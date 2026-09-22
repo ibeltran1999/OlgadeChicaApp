@@ -16,8 +16,13 @@ class Filmina:
             boceto.filminas.append(self)
 
     def agregar_tag(self, tag):
-        if tag not in self.tags:
-            self.tags.append(tag)
+        if tag in self.tags:
+            return
+        
+        if len(self.tags) >= 3:
+            raise ValueError("Una filmina no puede tener mas de tres tags")
+
+        self.tags.append(tag)
 
     def agregar_archivo(self, archivo):
         self.archivo = archivo
