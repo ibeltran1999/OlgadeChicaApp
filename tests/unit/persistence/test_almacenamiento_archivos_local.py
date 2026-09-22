@@ -13,9 +13,7 @@ class AlmacenamientoArchivosLocalTestCase(unittest.TestCase):
 
     def setUp(self):
         self.carpeta_temporal = tempfile.TemporaryDirectory()
-        self.almacenamiento = AlmacenamientoArchivosLocal(
-            self.carpeta_temporal.name
-        )
+        self.almacenamiento = AlmacenamientoArchivosLocal(self.carpeta_temporal.name)
 
         self.contenido = b"contenido de prueba"
         self.categoria = "filminas"
@@ -38,9 +36,10 @@ class AlmacenamientoArchivosLocalTestCase(unittest.TestCase):
         ruta_fisica = Path(self.carpeta_temporal.name) / archivo.ruta
 
         self.assertTrue(ruta_fisica.exists())
-        self.assertEqual(Path(archivo.ruta).parent,
-                         Path(self.categoria) / self.identificador,
-                         )
+        self.assertEqual(
+            Path(archivo.ruta).parent,
+            Path(self.categoria) / self.identificador,
+        )
         self.assertFalse(Path(archivo.ruta).is_absolute())
         self.assertEqual(Path(archivo.ruta).suffix, ".jpg")
         self.assertIsInstance(archivo, Archivo)

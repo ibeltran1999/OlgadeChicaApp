@@ -3,7 +3,7 @@ class Filmina:
         if not descripcion:
             raise ValueError("La descripcion es obligatoria")
         if procedencia is None:
-            raise ValueError("La procedencia es obligatoria") 
+            raise ValueError("La procedencia es obligatoria")
         self.identificador = identificador
         self.descripcion = descripcion
         self.fecha = fecha
@@ -22,7 +22,7 @@ class Filmina:
     def agregar_tag(self, tag):
         if tag in self.tags:
             return
-        
+
         if len(self.tags) >= 3:
             raise ValueError("Una filmina no puede tener mas de tres tags")
 

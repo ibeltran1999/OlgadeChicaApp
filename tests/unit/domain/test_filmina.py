@@ -169,7 +169,7 @@ class FilminaTestCase(unittest.TestCase):
             for datos in datos_3_tags
         ]
         tag4 = Tag(
-            identificador=datos_1_tag["identificador"], nombre=datos_1_tag["nombre"] 
+            identificador=datos_1_tag["identificador"], nombre=datos_1_tag["nombre"]
         )
         filmina_1 = Filmina(
             identificador=datos_filmina_1["identificador"],
@@ -205,6 +205,3 @@ class FilminaTestCase(unittest.TestCase):
                 fecha=datos_filmina_1["fecha"],
                 procedencia=None,
             )
-
-
-        
