@@ -159,3 +159,32 @@ class FilminaTestCase(unittest.TestCase):
 
         for tag in tags:
             self.assertIn(tag, filmina_1.tags)
+
+    def test_no_permitir_asociar_4_tags_a_filmina(self):
+        datos_filmina_1 = self.datos_filminas[0]
+        datos_3_tags = self.datos_tags[0:3]
+        datos_1_tag = self.datos_tags[3]
+        tags = [
+            Tag(identificador=datos["identificador"], nombre=datos["nombre"])
+            for datos in datos_3_tags
+        ]
+        tag4 = Tag(
+            identificador=datos_1_tag["identificador"], nombre=datos_1_tag["nombre"] 
+        )
+        filmina_1 = Filmina(
+            identificador=datos_filmina_1["identificador"],
+            descripcion=datos_filmina_1["descripcion"],
+            fecha=datos_filmina_1["fecha"],
+            procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
+        )
+
+        for tag in tags:
+            filmina_1.agregar_tag(tag)
+
+        with self.assertRaises(ValueError):
+            filmina_1.agregar_tag(tag4)
+
+        self.assertEqual(len(filmina_1.tags), 3)
+
+
+        
