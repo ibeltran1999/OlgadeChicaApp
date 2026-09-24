@@ -51,6 +51,7 @@ class FilminasFunctionalTestCase(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.session.close()
+        self.directorio_temporal.cleanup()
 
     def test_crear_filmina_desde_formulario_y_persistirla(self) -> None:
         respuesta = self.client.post(

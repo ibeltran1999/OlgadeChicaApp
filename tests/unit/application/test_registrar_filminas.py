@@ -66,7 +66,9 @@ class RegistrarFilminaTestCase(unittest.TestCase):
                     "tipo": TipoArchivo(tipo),
                 }
             )
-
+    def tearDown(self) -> None:
+        self.directorio_temporal.cleanup()
+        
     def test_registrar_filmina_sin_archivo(self):
         repositorio = RepositorioFilminasEnMemoria()
         generador = GeneradorIdentificadoresEnMemoria()
