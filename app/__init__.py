@@ -7,6 +7,7 @@ from app.application.generador_identificadores import (
     GeneradorIdentificadores,
 )
 from app.application.registrar_filmina import RegistrarFilmina
+from app.application.registrar_tag import RegistrarTag
 from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import (
     RepositorioFilminasSQLAlchemy,
@@ -18,6 +19,7 @@ from app.persistence.almacenamiento_archivos_local import (
 from app.presentation.controladores.controlador_filminas import (
     crear_controlador_filminas,
 )
+from app.presentation.controladores.controlador_tags import crear_controlador_tags
 
 
 def create_app() -> Flask:
@@ -40,8 +42,10 @@ def create_app() -> Flask:
     generador = GeneradorIdentificadores()
     almacenamiento = AlmacenamientoArchivosLocal(carpeta_storage)
     gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
+    gestor_tags = RegistrarTag(repositorio_tags)
 
     app.register_blueprint(crear_controlador_filminas(gestor, repositorio_tags))
+    app.register_blueprint(crear_controlador_tags(gestor_tags))
 
     @app.get("/")
     def index() -> str:

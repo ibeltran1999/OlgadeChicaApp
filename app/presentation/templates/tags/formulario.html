@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crear tag</title>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles.css') }}"
+    >
+</head>
+<body>
+    <main class="contenedor">
+        <h1>Crear tag</h1>
+
+        <form method="post" action="/tags">
+            <label for="identificador">Identificador</label>
+            <input
+                id="identificador"
+                name="identificador"
+                type="text"
+                required
+            >
+
+            <label for="nombre">Nombre</label>
+            <input
+                id="nombre"
+                name="nombre"
+                type="text"
+                required
+            >
+
+            <button type="submit">Guardar tag</button>
+        </form>
+    </main>
+</body>
+</html>
