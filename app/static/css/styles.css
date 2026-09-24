@@ -1,0 +1,72 @@
+:root {
+    font-family: Arial, sans-serif;
+    color: #2f2f2f;
+    background-color: #f4f1ec;
+}
+
+body {
+    margin: 0;
+}
+
+.contenedor {
+    width: min(90%, 700px);
+    margin: 3rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
+}
+
+.acciones-principales {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+h1 {
+    color: #704f39;
+}
+
+form {
+    display: grid;
+    gap: 1rem;
+}
+
+input,
+textarea,
+select,
+button {
+    padding: 0.7rem;
+    font: inherit;
+}
+
+button {
+    border: 0;
+    border-radius: 6px;
+    color: white;
+    background-color: #704f39;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4f3829;
+}
+.modal-confirmacion {
+    border: 0;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 25%);
+}
+
+.modal-confirmacion::backdrop {
+    background: rgb(0 0 0 / 45%);
+}
+.boton {
+    display: inline-block;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    color: white;
+    background-color: #704f39;
+    text-decoration: none;
+}

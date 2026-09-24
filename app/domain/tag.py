@@ -1,4 +1,4 @@
 class Tag:
-    def __init__(self, id, nombre):
-        self.id = id
+    def __init__(self, identificador, nombre):
+        self.identificador = identificador
         self.nombre = nombre

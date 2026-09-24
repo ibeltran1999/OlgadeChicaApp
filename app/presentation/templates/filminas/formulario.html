@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registrar Filmina</title>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles.css') }}"
+    >
+</head>
+<body>
+    <main class="contenedor">
+        <h1>Registrar Filmina</h1>
+
+        <form
+            method="post"
+            action="/filminas"
+            enctype="multipart/form-data"
+        >
+            <label for="descripcion">Descripción</label>
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                required
+            ></textarea>
+
+            <label for="fecha">Fecha</label>
+            <input
+                id="fecha"
+                name="fecha"
+                type="date"
+                required
+            >
+
+            <label for="procedencia">Procedencia</label>
+            <select id="procedencia" name="procedencia" required>
+                <option value="BLAA">BLAA</option>
+                <option value="Archivo Pedro Felipe Hoyos Korvel">
+                    Archivo Pedro Felipe Hoyos Korvel
+                </option>
+            </select>
+
+            <fieldset>
+                <legend>Tags</legend>
+                {% for numero in range(1, 4) %}
+                    <label for="tag_{{ numero }}">Tag {{ numero }}</label>
+                    <select id="tag_{{ numero }}" name="tag_identificador">
+                        <option value="">Sin tag</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.identificador }}">
+                                {{ tag.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endfor %}
+            </fieldset>
+
+            <label for="archivo">Archivo opcional</label>
+            <input
+                id="archivo"
+                name="archivo"
+                type="file"
+                accept=".jpg,.cr2,.png,.pdf"
+            >
+
+            <button type="submit">Guardar filmina</button>
+        </form>
+    </main>
+</body>
+</html>

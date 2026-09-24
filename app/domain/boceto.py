@@ -1,6 +1,6 @@
 class Boceto:
-    def __init__(self, id, descripcion, fecha):
-        self.id = id
+    def __init__(self, identificador, descripcion, fecha):
+        self.identificador = identificador
         self.descripcion = descripcion
         self.fecha = fecha
         self.filminas = []

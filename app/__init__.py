@@ -1,18 +1,54 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from pathlib import Path
+import os
 
-db = SQLAlchemy()
+from app.application.generador_identificadores import (
+    GeneradorIdentificadores,
+)
+from app.application.registrar_filmina import RegistrarFilmina
+from app.application.registrar_tag import RegistrarTag
+from app.persistence.repositorio_filminas import (
+    RepositorioFilminasSQLAlchemy,
+)
+from app.persistence.repositorio_tags import RepositorioTagsSQLAlchemy
+from app.persistence.almacenamiento_archivos_local import (
+    AlmacenamientoArchivosLocal,
+)
+from app.presentation.controladores.controlador_filminas import (
+    crear_controlador_filminas,
+)
+from app.presentation.controladores.controlador_tags import crear_controlador_tags
 
 
-def create_app():
-    app = Flask(__name__)
+def create_app() -> Flask:
+    app = Flask(__name__, instance_relative_config=True)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///olga.db"
+    carpeta_datos = Path(os.environ.get("OLGA_DATA_DIR", app.instance_path))
+    carpeta_datos.mkdir(parents=True, exist_ok=True)
 
-    db.init_app(app)
+    ruta_base_datos = carpeta_datos / "olga.db"
+    engine = create_engine(f"sqlite:///{ruta_base_datos}")
 
-    @app.route("/")
-    def index():
-        return "Plataforma Olga de Chica"
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+
+    carpeta_storage = carpeta_datos / "storage"
+    carpeta_storage.mkdir(parents=True, exist_ok=True)
+
+    repositorio = RepositorioFilminasSQLAlchemy(session)
+    repositorio_tags = RepositorioTagsSQLAlchemy(session)
+    generador = GeneradorIdentificadores()
+    almacenamiento = AlmacenamientoArchivosLocal(carpeta_storage)
+    gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
+    gestor_tags = RegistrarTag(repositorio_tags)
+
+    app.register_blueprint(crear_controlador_filminas(gestor, repositorio_tags))
+    app.register_blueprint(crear_controlador_tags(gestor_tags))
+
+    @app.get("/")
+    def index() -> str:
+        return render_template("index.html")
 
     return app

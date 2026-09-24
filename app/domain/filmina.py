@@ -1,10 +1,16 @@
 class Filmina:
-    def __init__(self, id, descripcion, fecha, procedencia):
-        self.id = id
+    def __init__(self, identificador, descripcion, fecha, procedencia):
+        if not descripcion:
+            raise ValueError("La descripcion es obligatoria")
+        if procedencia is None:
+            raise ValueError("La procedencia es obligatoria")
+        self.identificador = identificador
         self.descripcion = descripcion
         self.fecha = fecha
         self.procedencia = procedencia
         self.bocetos = []
+        self.archivo = None
+        self.tags = []
 
     def agregar_boceto(self, boceto):
         if boceto not in self.bocetos:
@@ -12,3 +18,15 @@ class Filmina:
 
         if self not in boceto.filminas:
             boceto.filminas.append(self)
+
+    def agregar_tag(self, tag):
+        if tag in self.tags:
+            return
+
+        if len(self.tags) >= 3:
+            raise ValueError("Una filmina no puede tener mas de tres tags")
+
+        self.tags.append(tag)
+
+    def agregar_archivo(self, archivo):
+        self.archivo = archivo
