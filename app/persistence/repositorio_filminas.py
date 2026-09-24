@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
 from app.domain.archivo import Archivo
@@ -27,21 +28,30 @@ class RepositorioFilminasSQLAlchemy:
                 tipo=filmina.archivo.tipo.value,
             )
 
-        self.session.add(modelo)
+        try:
+            self.session.add(modelo)
+            identificadores = set()
 
-        for tag in filmina.tags:
-            tag_model = self.session.scalar(
-                select(TagModel).where(TagModel.identificador == tag.identificador)
-            )
+            for tag in filmina.tags:
+                if tag.identificador in identificadores:
+                    continue
 
-            if tag_model is None:
-                raise ValueError(
-                    f"El tag {tag.identificador} no existe"
+                tag_model = self.session.scalar(
+                    select(TagModel).where(
+                        TagModel.identificador == tag.identificador
+                    )
                 )
 
-            modelo.tags.append(tag_model)
+                if tag_model is None:
+                    raise ValueError(f"El tag {tag.identificador} no existe")
 
-        self.session.commit()
+                modelo.tags.append(tag_model)
+                identificadores.add(tag.identificador)
+
+            self.session.commit()
+        except (SQLAlchemyError, ValueError):
+            self.session.rollback()
+            raise
 
     def obtener_por_identificador(self, identificador: str) -> Filmina | None:
         modelo = self.session.scalar(

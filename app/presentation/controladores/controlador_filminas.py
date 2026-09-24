@@ -28,11 +28,16 @@ def crear_controlador_filminas(gestor, repositorio_tags=None) -> Blueprint:
             if datos is None:
                 return jsonify({"error": "Datos inválidos"}), 400
 
-            identificadores = (
+            identificadores_recibidos = (
                 request.form.getlist("tag_identificador")
                 if request.form
                 else datos.get("tags", [])
             )
+            identificadores = list(dict.fromkeys(
+                identificador
+                for identificador in identificadores_recibidos
+                if identificador
+            ))
 
             if repositorio_tags is not None:
                 tags = []
