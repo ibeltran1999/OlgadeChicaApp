@@ -1,10 +1,14 @@
 import unittest
+import tempfile
 from datetime import date
 from faker import Faker
 
 from app.domain import Filmina, Archivo
 from app.application.registrar_filmina import RegistrarFilmina
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
+from app.persistence.almacenamiento_archivos_local import (
+    AlmacenamientoArchivosLocal
+)
 
 
 class RepositorioFilminasEnMemoria:
@@ -22,6 +26,7 @@ class GeneradorIdentificadoresEnMemoria:
 
 class RegistrarFilminaTestCase(unittest.TestCase):
     def setUp(self):
+        self.directorio_temporal = tempfile.TemporaryDirectory()
         self.data_factory = Faker("es_CO")
         self.data_factory.seed_instance(1000)
 
@@ -65,8 +70,10 @@ class RegistrarFilminaTestCase(unittest.TestCase):
     def test_registrar_filmina_sin_archivo(self):
         repositorio = RepositorioFilminasEnMemoria()
         generador = GeneradorIdentificadoresEnMemoria()
+        almacenamiento = AlmacenamientoArchivosLocal(
+            self.directorio_temporal.name)
 
-        caso_de_uso = RegistrarFilmina(repositorio, generador)
+        caso_de_uso = RegistrarFilmina(repositorio, generador, almacenamiento)
         datos_filmina_1 = self.datos_filminas[0]
 
         filmina = caso_de_uso.ejecutar(

@@ -3,9 +3,10 @@ from app.domain.enums import ProcedenciaFilmina
 
 
 class RegistrarFilmina:
-    def __init__(self, repositorio, generador):
+    def __init__(self, repositorio, generador, almacenamiento):
         self.repositorio = repositorio
         self.generador = generador
+        self.almacenamiento = almacenamiento
 
     def ejecutar(self, descripcion, fecha, procedencia, archivo=None):
         identificador = self.generador.generar_identificador_filmina()

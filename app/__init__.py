@@ -11,6 +11,9 @@ from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import (
     RepositorioFilminasSQLAlchemy,
 )
+from app.persistence.almacenamiento_archivos_local import (
+    AlmacenamientoArchivosLocal,
+)
 from app.presentation.controladores.controlador_filminas import (
     crear_controlador_filminas,
 )
@@ -28,9 +31,13 @@ def create_app() -> Flask:
     session_factory = sessionmaker(bind=engine)
     session = session_factory()
 
+    carpeta_storage = Path(app.instance_path)/"storage"
+    carpeta_storage.mkdir(parents=True, exist_ok=True)
+
     repositorio = RepositorioFilminasSQLAlchemy(session)
     generador = GeneradorIdentificadores()
-    gestor = RegistrarFilmina(repositorio, generador)
+    almacenamiento = AlmacenamientoArchivosLocal(carpeta_storage)
+    gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
 
     app.register_blueprint(crear_controlador_filminas(gestor))
 
