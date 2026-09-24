@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from pathlib import Path
@@ -36,6 +36,6 @@ def create_app() -> Flask:
 
     @app.get("/")
     def index() -> str:
-        return "Plataforma Olga de Chica"
+        return render_template("index.html")
 
     return app

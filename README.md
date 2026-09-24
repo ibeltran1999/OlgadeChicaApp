@@ -218,28 +218,44 @@ Los fixtures generan datos de prueba; no representan directamente las entidades 
 
 ```text
 plataforma-olga/
-│
 ├── app/
+│   ├── __init__.py
 │   ├── application/
+│   │   ├── generador_identificadores.py
 │   │   └── registrar_filmina.py
 │   ├── domain/
 │   │   ├── archivo.py
+│   │   ├── boceto.py
 │   │   ├── enums.py
 │   │   ├── filmina.py
+│   │   ├── recurso.py
 │   │   └── tag.py
-│   └── persistence/
-│       └── almacenamiento_archivos_local.py
-│
+│   ├── persistence/
+│   │   ├── almacenamiento_archivos_local.py
+│   │   ├── repositorio_filminas.py
+│   │   └── modelos/
+│   │       ├── modelo_archivo.py
+│   │       └── modelo_filmina.py
+│   └── presentation/
+│       ├── controladores/
+│       │   └── controlador_filminas.py
+│       └── templates/
+│           └── filminas/
+│               └── formulario.html
+├── instance/
+│   ├── olga.db
+│   └── storage/
 ├── tests/
 │   ├── unit/
+│   │   ├── application/
+│   │   ├── domain/
+│   │   ├── persistence/
+│   │   └── presentation/
 │   ├── integration/
+│   │   └── persistence/
 │   └── functional/
-│
-├── instance/
-├── requirements.txt
-├── .env.example
-├── .gitignore
 ├── run.py
+├── requirements.txt
 └── README.md
 ```
 

@@ -2,36 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registrar Filmina</title>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles.css') }}"
+    >
 </head>
 <body>
-    <h1>Registrar Filmina</h1>
+    <main class="contenedor">
+        <h1>Registrar Filmina</h1>
 
-    <form method="post" action="/filminas">
-        <label for="descripcion">Descripción</label>
-        <textarea
-            id="descripcion"
-            name="descripcion"
-            required
-        ></textarea>
+        <form method="post" action="/filminas">
+            <label for="descripcion">Descripción</label>
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                required
+            ></textarea>
 
-        <label for="fecha">Fecha</label>
-        <input
-            id="fecha"
-            name="fecha"
-            type="date"
-            required
-        >
+            <label for="fecha">Fecha</label>
+            <input
+                id="fecha"
+                name="fecha"
+                type="date"
+                required
+            >
 
-        <label for="procedencia">Procedencia</label>
-        <select id="procedencia" name="procedencia" required>
-            <option value="BLAA">BLAA</option>
-            <option value="Archivo Pedro Felipe Hoyos Korvel">
-                Archivo Pedro Felipe Hoyos Korvel
-            </option>
-        </select>
+            <label for="procedencia">Procedencia</label>
+            <select id="procedencia" name="procedencia" required>
+                <option value="BLAA">BLAA</option>
+                <option value="Archivo Pedro Felipe Hoyos Korvel">
+                    Archivo Pedro Felipe Hoyos Korvel
+                </option>
+            </select>
 
-        <button type="submit">Guardar filmina</button>
-    </form>
+            <button type="submit">Guardar filmina</button>
+        </form>
+    </main>
 </body>
 </html>
