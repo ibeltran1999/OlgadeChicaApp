@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.domain.filmina import Filmina
+from app.domain.tag import Tag
 from app.domain.enums import ProcedenciaFilmina
 from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import RepositorioFilminasSQLAlchemy
@@ -53,5 +54,42 @@ class RepositorioFilminasTestCase(unittest.TestCase):
             self.assertEqual(resultado.fecha, date(2024, 1, 15))
             self.assertEqual(resultado.procedencia, ProcedenciaFilmina.BLAA)
             self.assertIsNone(resultado.archivo)
+        finally:
+            nueva_sesion.close()
+
+    def test_persistir_y_recuperar_tags_de_filmina(self):
+        filmina = Filmina(
+            identificador="F002",
+            descripcion="Filmina con tags",
+            fecha=date(2024, 1, 15),
+            procedencia=ProcedenciaFilmina.BLAA,
+        )
+        tags = [
+            Tag(identificador="T001", nombre="Arquitectura"),
+            Tag(identificador="T002", nombre="Fachada"),
+        ]
+
+        for tag in tags:
+            filmina.agregar_tag(tag)
+
+        self.repositorio.guardar(filmina)
+
+        self.session.close()
+
+        nueva_sesion = self.Session()
+
+        try:
+            nuevo_repositorio = RepositorioFilminasSQLAlchemy(nueva_sesion)
+
+            resultado = nuevo_repositorio.obtener_por_identificador("F002")
+
+            if resultado is None:
+                self.fail("No se encontro la filmina persistida")
+
+            self.assertEqual(len(resultado.tags), 2)
+            self.assertEqual(
+                {(tag.identificador, tag.nombre) for tag in resultado.tags},
+                {("T001", "Arquitectura"), ("T002", "Fachada")},
+            )
         finally:
             nueva_sesion.close()
