@@ -24,9 +24,7 @@ class RepositorioFilminasSQLAlchemy:
 
     def obtener_por_identificador(self, identificador: str) -> Filmina | None:
         modelo = self.session.scalar(
-            select(FilminaModel).where(
-                FilminaModel.identificador == identificador
-            )
+            select(FilminaModel).where(FilminaModel.identificador == identificador)
         )
 
         if modelo is None:
