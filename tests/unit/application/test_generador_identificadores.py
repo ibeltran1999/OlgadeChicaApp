@@ -6,18 +6,29 @@ from app.application.generador_identificadores import (
 )
 
 
+
 class GeneradorIdentificadoresTestCase(unittest.TestCase):
 
-    def setUp(self) -> None:
-        self.generador = GeneradorIdentificadores()
+    def test_generar_identificadores_incrementales(self) -> None:
+        generador = GeneradorIdentificadores()
 
-    def test_generar_identificador_de_filmina(self) -> None:
-        identificador = self.generador.generar_identificador_filmina()
+        self.assertEqual(
+            generador.generar_identificador_filmina(),
+            "1",
+        )
+        self.assertEqual(
+            generador.generar_identificador_filmina(),
+            "2",
+        )
+        self.assertEqual(
+            generador.generar_identificador_filmina(),
+            "3",
+        )
 
-        self.assertRegex(identificador, r"^F-[A-F0-9]{8}$")
+    def test_generador_puede_iniciar_en_otro_numero(self) -> None:
+        generador = GeneradorIdentificadores(inicial=10)
 
-    def test_generar_identificadores_diferentes(self) -> None:
-        primero = self.generador.generar_identificador_filmina()
-        segundo = self.generador.generar_identificador_filmina()
-
-        self.assertNotEqual(primero, segundo)
+        self.assertEqual(
+            generador.generar_identificador_filmina(),
+            "10",
+        )
