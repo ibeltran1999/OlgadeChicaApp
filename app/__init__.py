@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from pathlib import Path
+import os
 
 from app.application.generador_identificadores import (
     GeneradorIdentificadores,
@@ -24,15 +25,16 @@ from app.presentation.controladores.controlador_tags import crear_controlador_ta
 def create_app() -> Flask:
     app = Flask(__name__, instance_relative_config=True)
 
-    Path(app.instance_path).mkdir(parents=True, exist_ok=True)
+    carpeta_datos = Path(os.environ.get("OLGA_DATA_DIR", app.instance_path))
+    carpeta_datos.mkdir(parents=True, exist_ok=True)
 
-    ruta_base_datos = Path(app.instance_path) / "olga.db"
+    ruta_base_datos = carpeta_datos / "olga.db"
     engine = create_engine(f"sqlite:///{ruta_base_datos}")
 
     session_factory = sessionmaker(bind=engine)
     session = session_factory()
 
-    carpeta_storage = Path(app.instance_path) / "storage"
+    carpeta_storage = carpeta_datos / "storage"
     carpeta_storage.mkdir(parents=True, exist_ok=True)
 
     repositorio = RepositorioFilminasSQLAlchemy(session)
