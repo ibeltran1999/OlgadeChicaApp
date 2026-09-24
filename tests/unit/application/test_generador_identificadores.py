@@ -6,7 +6,6 @@ from app.application.generador_identificadores import (
 )
 
 
-
 class GeneradorIdentificadoresTestCase(unittest.TestCase):
 
     def test_generar_identificadores_incrementales(self) -> None:

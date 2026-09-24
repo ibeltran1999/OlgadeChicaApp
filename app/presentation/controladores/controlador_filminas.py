@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify, request, render_template
 from app.application.registrar_filmina import RegistrarFilmina
 from app.domain.enums import TipoArchivo
 
+
 def crear_controlador_filminas(gestor) -> Blueprint:
     controlador = Blueprint(
         "filminas",
@@ -30,9 +31,7 @@ def crear_controlador_filminas(gestor) -> Blueprint:
             archivo = None
 
             if archivo_subido is not None and archivo_subido.filename:
-                extension = Path(
-                    archivo_subido.filename
-                ).suffix[1:].upper()
+                extension = Path(archivo_subido.filename).suffix[1:].upper()
 
                 archivo = {
                     "contenido": archivo_subido.read(),
