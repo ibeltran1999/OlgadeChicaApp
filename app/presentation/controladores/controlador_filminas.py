@@ -19,10 +19,15 @@ def crear_controlador_filminas(gestor) -> Blueprint:
 
     @controlador.post("/filminas")
     def crear_filmina() -> tuple[Any, int]:
-        datos = request.get_json(silent=True)
+        datos: Any
+
+        if request.form:
+            datos = request.form
+        else:
+            datos = request.get_json(silent=True)
 
         if not isinstance(datos, dict):
-            return jsonify({"error": "El cuerpo debe ser JSON"}), 400
+            return jsonify({"error": "Datos inválidos"}), 400
 
         try:
             filmina = gestor.ejecutar(
@@ -33,16 +38,14 @@ def crear_controlador_filminas(gestor) -> Blueprint:
         except (KeyError, TypeError, ValueError) as error:
             return jsonify({"error": str(error)}), 400
 
-        return (
-            jsonify(
-                {
-                    "identificador": filmina.identificador,
-                    "descripcion": filmina.descripcion,
-                    "fecha": filmina.fecha.isoformat(),
-                    "procedencia": filmina.procedencia.value,
-                }
-            ),
-            201,
-        )
+        return jsonify(
+            {
+                "identificador": filmina.identificador,
+                "descripcion": filmina.descripcion,
+                "fecha": filmina.fecha.isoformat(),
+                "procedencia": filmina.procedencia.value,
+            }
+        ), 201
+
 
     return controlador

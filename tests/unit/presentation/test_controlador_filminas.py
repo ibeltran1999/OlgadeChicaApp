@@ -71,5 +71,5 @@ class ControladorFilminasTestCase(unittest.TestCase):
         self.assertIn("Registrar Filmina", contenido)
         self.assertIn('name="descripcion"', contenido)
         self.assertIn('name="fecha"', contenido)
-        self.assertIn('name="precedencia"', contenido)
+        self.assertIn('name="procedencia"', contenido)
         self.assertIn("Guardar filmina", contenido)
