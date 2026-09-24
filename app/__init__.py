@@ -21,7 +21,7 @@ def create_app() -> Flask:
 
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
 
-    ruta_base_datos = Path(app.instance_path)/"olga.db"
+    ruta_base_datos = Path(app.instance_path) / "olga.db"
     engine = create_engine(f"sqlite:///{ruta_base_datos}")
     Base.metadata.create_all(engine)
 

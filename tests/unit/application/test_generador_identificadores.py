@@ -12,9 +12,7 @@ class GeneradorIdentificadoresTestCase(unittest.TestCase):
         self.generador = GeneradorIdentificadores()
 
     def test_generar_identificador_de_filmina(self) -> None:
-        identificador = (
-            self.generador.generar_identificador_filmina()
-        )
+        identificador = self.generador.generar_identificador_filmina()
 
         self.assertRegex(identificador, r"^F-[A-F0-9]{8}$")
 

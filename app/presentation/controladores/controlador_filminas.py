@@ -38,14 +38,16 @@ def crear_controlador_filminas(gestor) -> Blueprint:
         except (KeyError, TypeError, ValueError) as error:
             return jsonify({"error": str(error)}), 400
 
-        return jsonify(
-            {
-                "identificador": filmina.identificador,
-                "descripcion": filmina.descripcion,
-                "fecha": filmina.fecha.isoformat(),
-                "procedencia": filmina.procedencia.value,
-            }
-        ), 201
-
+        return (
+            jsonify(
+                {
+                    "identificador": filmina.identificador,
+                    "descripcion": filmina.descripcion,
+                    "fecha": filmina.fecha.isoformat(),
+                    "procedencia": filmina.procedencia.value,
+                }
+            ),
+            201,
+        )
 
     return controlador

@@ -34,9 +34,7 @@ class FilminasFunctionalTestCase(unittest.TestCase):
         gestor = RegistrarFilmina(repositorio, generador)
 
         self.app = Flask(__name__)
-        self.app.register_blueprint(
-            crear_controlador_filminas(gestor)
-        )
+        self.app.register_blueprint(crear_controlador_filminas(gestor))
         self.client = self.app.test_client()
         self.session = session
 
@@ -65,4 +63,3 @@ class FilminasFunctionalTestCase(unittest.TestCase):
         self.assertEqual(filmina.identificador, "F001")
         self.assertEqual(filmina.descripcion, "Filmina funcional")
         self.assertEqual(filmina.fecha, date(2024, 1, 15))
-
