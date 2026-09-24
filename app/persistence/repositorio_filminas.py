@@ -27,20 +27,20 @@ class RepositorioFilminasSQLAlchemy:
                 tipo=filmina.archivo.tipo.value,
             )
 
+        self.session.add(modelo)
+
         for tag in filmina.tags:
             tag_model = self.session.scalar(
                 select(TagModel).where(TagModel.identificador == tag.identificador)
             )
 
             if tag_model is None:
-                tag_model = TagModel(
-                    identificador=tag.identificador,
-                    nombre=tag.nombre,
+                raise ValueError(
+                    f"El tag {tag.identificador} no existe"
                 )
 
             modelo.tags.append(tag_model)
 
-        self.session.add(modelo)
         self.session.commit()
 
     def obtener_por_identificador(self, identificador: str) -> Filmina | None:

@@ -1,6 +1,5 @@
 from app.domain import Filmina
 from app.domain.enums import ProcedenciaFilmina
-from app.domain.tag import Tag
 
 
 class RegistrarFilmina:
@@ -28,13 +27,8 @@ class RegistrarFilmina:
             )
             filmina.agregar_archivo(archivo_guardado)
 
-        for datos_tag in tags or []:
-            filmina.agregar_tag(
-                Tag(
-                    identificador=datos_tag["identificador"],
-                    nombre=datos_tag["nombre"],
-                )
-            )
+        for tag in tags or []:
+            filmina.agregar_tag(tag)
 
         self.repositorio.guardar(filmina)
 

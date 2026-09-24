@@ -44,23 +44,15 @@
             <fieldset>
                 <legend>Tags</legend>
                 {% for numero in range(1, 4) %}
-                    <label for="tag_identificador_{{ numero }}">
-                        Identificador del tag {{ numero }}
-                    </label>
-                    <input
-                        id="tag_identificador_{{ numero }}"
-                        name="tag_identificador"
-                        type="text"
-                    >
-
-                    <label for="tag_nombre_{{ numero }}">
-                        Nombre del tag {{ numero }}
-                    </label>
-                    <input
-                        id="tag_nombre_{{ numero }}"
-                        name="tag_nombre"
-                        type="text"
-                    >
+                    <label for="tag_{{ numero }}">Tag {{ numero }}</label>
+                    <select id="tag_{{ numero }}" name="tag_identificador">
+                        <option value="">Sin tag</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.identificador }}">
+                                {{ tag.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 {% endfor %}
             </fieldset>
 

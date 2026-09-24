@@ -32,23 +32,37 @@ class RegistrarFilminaFalso:
             fecha=fecha,
             procedencia=ProcedenciaFilmina(procedencia),
         )
-        for datos_tag in tags or []:
-            self.ultima_filmina.agregar_tag(
-                Tag(
-                    identificador=datos_tag["identificador"],
-                    nombre=datos_tag["nombre"],
-                )
-            )
+        for tag in tags or []:
+            self.ultima_filmina.agregar_tag(tag)
         return self.ultima_filmina
+
+
+class RepositorioTagsFalso:
+    def __init__(self, tags):
+        self.tags = {tag.identificador: tag for tag in tags}
+
+    def listar(self):
+        return list(self.tags.values())
+
+    def obtener_por_identificador(self, identificador):
+        return self.tags.get(identificador)
 
 
 class ControladorFilminasTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         self.gestor = RegistrarFilminaFalso()
+        self.tags = [
+            Tag(identificador="T001", nombre="Arquitectura"),
+            Tag(identificador="T002", nombre="Fachada"),
+            Tag(identificador="T003", nombre="Patrimonio"),
+        ]
+        self.repositorio_tags = RepositorioTagsFalso(self.tags)
 
         self.app = Flask(__name__)
-        self.app.register_blueprint(crear_controlador_filminas(self.gestor))
+        self.app.register_blueprint(
+            crear_controlador_filminas(self.gestor, self.repositorio_tags)
+        )
         self.client = self.app.test_client()
 
     def test_crear_filmina(self) -> None:
@@ -85,6 +99,8 @@ class ControladorFilminasTestCase(unittest.TestCase):
         self.assertIn('name="descripcion"', contenido)
         self.assertIn('name="fecha"', contenido)
         self.assertIn('name="procedencia"', contenido)
+        self.assertIn('value="T001"', contenido)
+        self.assertIn("Arquitectura", contenido)
         self.assertIn("Guardar filmina", contenido)
 
     def test_crear_filmina_con_archivo(self) -> None:
@@ -115,11 +131,8 @@ class ControladorFilminasTestCase(unittest.TestCase):
                 ("fecha", "2026-09-01"),
                 ("procedencia", "BLAA"),
                 ("tag_identificador", "T001"),
-                ("tag_nombre", "Arquitectura"),
                 ("tag_identificador", "T002"),
-                ("tag_nombre", "Fachada"),
                 ("tag_identificador", "T003"),
-                ("tag_nombre", "Patrimonio"),
             ]),
             content_type="multipart/form-data",
         )

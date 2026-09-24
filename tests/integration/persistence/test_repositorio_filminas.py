@@ -9,6 +9,7 @@ from app.domain.tag import Tag
 from app.domain.enums import ProcedenciaFilmina
 from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import RepositorioFilminasSQLAlchemy
+from app.persistence.repositorio_tags import RepositorioTagsSQLAlchemy
 
 
 class RepositorioFilminasTestCase(unittest.TestCase):
@@ -22,6 +23,7 @@ class RepositorioFilminasTestCase(unittest.TestCase):
     def setUp(self):
         self.session = self.Session()
         self.repositorio = RepositorioFilminasSQLAlchemy(self.session)
+        self.repositorio_tags = RepositorioTagsSQLAlchemy(self.session)
 
     def tearDown(self):
         self.session.rollback()
@@ -70,6 +72,7 @@ class RepositorioFilminasTestCase(unittest.TestCase):
         ]
 
         for tag in tags:
+            self.repositorio_tags.guardar(tag)
             filmina.agregar_tag(tag)
 
         self.repositorio.guardar(filmina)
@@ -93,3 +96,19 @@ class RepositorioFilminasTestCase(unittest.TestCase):
             )
         finally:
             nueva_sesion.close()
+
+    def test_no_crear_tag_al_guardar_filmina_con_tag_inexistente(self):
+        filmina = Filmina(
+            identificador="F003",
+            descripcion="Filmina con tag inexistente",
+            fecha=date(2024, 1, 15),
+            procedencia=ProcedenciaFilmina.BLAA,
+        )
+        filmina.agregar_tag(Tag(identificador="T999", nombre="Inexistente"))
+
+        with self.assertRaises(ValueError):
+            self.repositorio.guardar(filmina)
+
+        self.assertIsNone(
+            self.repositorio_tags.obtener_por_identificador("T999")
+        )
