@@ -1,13 +1,21 @@
 from datetime import date
 from typing import Any
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 
 from app.application.registrar_filmina import RegistrarFilmina
 
 
 def crear_controlador_filminas(gestor) -> Blueprint:
-    controlador = Blueprint("filminas", __name__)
+    controlador = Blueprint(
+        "filminas",
+        __name__,
+        template_folder="../templates",
+    )
+
+    @controlador.get("/filminas/nueva")
+    def mostrar_formulario() -> str:
+        return render_template("filminas/formulario.html")
 
     @controlador.post("/filminas")
     def crear_filmina() -> tuple[Any, int]:
@@ -25,13 +33,16 @@ def crear_controlador_filminas(gestor) -> Blueprint:
         except (KeyError, TypeError, ValueError) as error:
             return jsonify({"error": str(error)}), 400
 
-        return jsonify(
-            {
-                "identificador": filmina.identificador,
-                "descripcion": filmina.descripcion,
-                "fecha": filmina.fecha.isoformat(),
-                "procedencia": filmina.procedencia.value,
-            }
-        ), 201
+        return (
+            jsonify(
+                {
+                    "identificador": filmina.identificador,
+                    "descripcion": filmina.descripcion,
+                    "fecha": filmina.fecha.isoformat(),
+                    "procedencia": filmina.procedencia.value,
+                }
+            ),
+            201,
+        )
 
     return controlador
