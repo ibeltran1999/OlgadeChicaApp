@@ -7,7 +7,6 @@ from flask import Blueprint, jsonify, request, render_template
 from app.application.registrar_filmina import RegistrarFilmina
 from app.domain.enums import TipoArchivo
 
-
 def crear_controlador_filminas(gestor) -> Blueprint:
     controlador = Blueprint(
         "filminas",
@@ -20,12 +19,9 @@ def crear_controlador_filminas(gestor) -> Blueprint:
         return render_template("filminas/formulario.html")
 
     @controlador.post("/filminas")
-    def crear_filmina() -> tuple[Any, int]:
+    def crear_filmina() -> Any:
         try:
-            datos = request.form
-
-            if not datos:
-                datos = request.get_json(silent=True)
+            datos = request.form or request.get_json(silent=True)
 
             if datos is None:
                 return jsonify({"error": "Datos inválidos"}), 400
@@ -34,7 +30,9 @@ def crear_controlador_filminas(gestor) -> Blueprint:
             archivo = None
 
             if archivo_subido is not None and archivo_subido.filename:
-                extension = Path(archivo_subido.filename).suffix[1:].upper()
+                extension = Path(
+                    archivo_subido.filename
+                ).suffix[1:].upper()
 
                 archivo = {
                     "contenido": archivo_subido.read(),
@@ -52,16 +50,19 @@ def crear_controlador_filminas(gestor) -> Blueprint:
         except (KeyError, TypeError, ValueError) as error:
             return jsonify({"error": str(error)}), 400
 
-        return (
-            jsonify(
-                {
-                    "identificador": filmina.identificador,
-                    "descripcion": filmina.descripcion,
-                    "fecha": filmina.fecha.isoformat(),
-                    "procedencia": filmina.procedencia.value,
-                }
-            ),
-            201,
-        )
+        resultado = {
+            "identificador": filmina.identificador,
+            "descripcion": filmina.descripcion,
+            "fecha": filmina.fecha.isoformat(),
+            "procedencia": filmina.procedencia.value,
+        }
+
+        if request.form:
+            return render_template(
+                "filminas/confirmacion.html",
+                resultado=resultado,
+            )
+
+        return jsonify(resultado), 201
 
     return controlador
