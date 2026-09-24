@@ -25,7 +25,7 @@ class RepositorioFilminasTestCase(unittest.TestCase):
         self.session.rollback()
         self.session.close()
 
-    def test_persistir_y_recuperar_filmina(self):
+    def test_persistir_y_recuperar_filmina_sin_archivo(self):
         filmina = Filmina(
             identificador="F001",
             descripcion="Filmina de prueba",
@@ -44,7 +44,9 @@ class RepositorioFilminasTestCase(unittest.TestCase):
 
             resultado = nuevo_repositorio.obtener_por_identificador("F001")
 
-            self.assertIsNotNone(resultado)
+            if resultado is None:
+                self.fail("No se encontro la filmina persistida")
+
             self.assertEqual(resultado.identificador, "F001")
             self.assertEqual(resultado.descripcion, "Filmina de prueba")
             self.assertEqual(resultado.fecha, date(2024, 1, 15))
