@@ -9,6 +9,7 @@ from app.domain.enums import ProcedenciaFilmina
 from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import RepositorioFilminasSQLAlchemy
 
+
 class RepositorioFilminasTestCase(unittest.TestCase):
 
     @classmethod
