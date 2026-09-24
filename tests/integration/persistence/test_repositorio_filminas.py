@@ -112,3 +112,27 @@ class RepositorioFilminasTestCase(unittest.TestCase):
         self.assertIsNone(
             self.repositorio_tags.obtener_por_identificador("T999")
         )
+
+    def test_no_repetir_asociacion_de_tag_en_una_filmina(self):
+        tag = Tag(identificador="T004", nombre="Interior")
+        self.repositorio_tags.guardar(tag)
+
+        filmina = Filmina(
+            identificador="F004",
+            descripcion="Filmina con tag repetido",
+            fecha=date(2024, 1, 15),
+            procedencia=ProcedenciaFilmina.BLAA,
+        )
+        filmina.tags.extend([
+            Tag(identificador="T004", nombre="Interior"),
+            Tag(identificador="T004", nombre="Interior"),
+        ])
+
+        self.repositorio.guardar(filmina)
+
+        resultado = self.repositorio.obtener_por_identificador("F004")
+
+        self.assertIsNotNone(resultado)
+        assert resultado is not None
+        self.assertEqual(len(resultado.tags), 1)
+        self.assertEqual(resultado.tags[0].identificador, "T004")
