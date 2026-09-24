@@ -1,11 +1,11 @@
 [Setup]
 AppId={{B8EECF1E-0F83-4D92-A7C5-01DADEC1CA11}
 AppName=Olga de Chica
-AppVersion=0.1.0
+AppVersion={#AppVersion}
 DefaultDirName={autopf}\OlgaDeChica
 DefaultGroupName=Olga de Chica
 OutputDir=..\release
-OutputBaseFilename=OlgaDeChica-Setup
+OutputBaseFilename=OlgaDeChica-Setup-{#AppVersion}
 Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64compatible
