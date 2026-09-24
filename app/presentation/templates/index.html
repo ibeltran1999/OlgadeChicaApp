@@ -13,12 +13,14 @@
     <main class="contenedor">
         <h1>Plataforma Olga de Chica</h1>
         <p>Gestión de la colección documental.</p>
-        <a href="{{ url_for('filminas.mostrar_formulario') }}">
-            Registrar una filmina
-        </a>
-        <a href="{{ url_for('tags.mostrar_formulario') }}">
-            Crear un tag
-        </a>
+        <nav class="acciones-principales">
+            <a href="{{ url_for('filminas.mostrar_formulario') }}">
+                Registrar una filmina
+            </a>
+            <a href="{{ url_for('tags.mostrar_formulario') }}">
+                Crear un tag
+            </a>
+        </nav>
     </main>
 </body>
 </html>

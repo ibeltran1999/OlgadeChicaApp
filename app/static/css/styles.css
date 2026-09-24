@@ -17,6 +17,12 @@ body {
     box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
 }
 
+.acciones-principales {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
 h1 {
     color: #704f39;
 }
