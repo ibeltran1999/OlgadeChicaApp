@@ -298,11 +298,7 @@ python -m unittest discover tests -v
 
 Las pruebas unitarias se ejecutan sin depender de una base de datos real. Para probar el almacenamiento local se utiliza un directorio temporal, que se elimina al terminar cada prueba. Las pruebas de integración utilizarán una base de datos de prueba para verificar la interacción con SQLAlchemy.
 
-Para una base existente creada antes de incorporar Alembic, hacer primero un respaldo y marcar la revisión inicial sin recrear las tablas:
-
-```bash
-alembic stamp 20260924_0001
-```
+La herramienta de migración solo acepta bases que ya tienen la tabla `alembic_version`.
 
 Las futuras modificaciones del esquema deben hacerse mediante nuevas revisiones de Alembic. `Base.metadata.create_all()` no se ejecuta al iniciar la aplicación.
 

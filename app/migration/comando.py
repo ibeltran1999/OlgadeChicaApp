@@ -12,7 +12,6 @@ from alembic import command
 from alembic.config import Config
 
 BASELINE_REVISION = "20260924_0001"
-EXPECTED_TABLES = {"archivos", "filminas", "filmina_tags", "tags"}
 PROJECT_ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
 
 
@@ -82,7 +81,7 @@ def _has_alembic_version(database_path: Path) -> bool:
     return "alembic_version" in _table_names(database_path)
 
 
-def _run_alembic(database_path: Path, operation: str) -> None:
+def _run_alembic(database_path: Path) -> None:
     database_url = _database_url(database_path)
     config = Config(str(PROJECT_ROOT / "alembic.ini"))
     config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
@@ -90,10 +89,7 @@ def _run_alembic(database_path: Path, operation: str) -> None:
     previous_url = os.environ.get("ALEMBIC_DATABASE_URL")
     os.environ["ALEMBIC_DATABASE_URL"] = database_url
     try:
-        if operation == "stamp":
-            command.stamp(config, BASELINE_REVISION)
-        else:
-            command.upgrade(config, "head")
+        command.upgrade(config, "head")
     finally:
         if previous_url is None:
             os.environ.pop("ALEMBIC_DATABASE_URL", None)
@@ -101,7 +97,7 @@ def _run_alembic(database_path: Path, operation: str) -> None:
             os.environ["ALEMBIC_DATABASE_URL"] = previous_url
 
 
-def migrate(data_dir: Path, adopt_existing: bool = False) -> Path:
+def migrate(data_dir: Path) -> Path:
     data_dir = data_dir.expanduser().resolve()
     data_dir.mkdir(parents=True, exist_ok=True)
     database_path = data_dir / "olga.db"
@@ -111,21 +107,12 @@ def migrate(data_dir: Path, adopt_existing: bool = False) -> Path:
         _check_integrity(database_path)
 
         if database_path.exists() and not _has_alembic_version(database_path):
-            if not adopt_existing:
-                raise MigrationError(
-                    "La base existe pero no tiene version de Alembic. "
-                    "Ejecute nuevamente con --adopt-existing despues de verificarla."
-                )
+            raise MigrationError(
+                "La base existe pero no tiene version de Alembic; "
+                "debe ser versionada antes de ejecutar esta herramienta."
+            )
 
-            missing_tables = EXPECTED_TABLES - _table_names(database_path)
-            if missing_tables:
-                raise MigrationError(
-                    "No se puede adoptar la base; faltan tablas: "
-                    + ", ".join(sorted(missing_tables))
-                )
-            _run_alembic(database_path, "stamp")
-
-        _run_alembic(database_path, "upgrade")
+        _run_alembic(database_path)
         _check_integrity(database_path)
 
     return backup_dir
@@ -145,15 +132,10 @@ def main(argv: list[str] | None = None) -> int:
         default=_default_data_dir(),
         help="Carpeta estable que contiene olga.db y storage",
     )
-    parser.add_argument(
-        "--adopt-existing",
-        action="store_true",
-        help="Marca como baseline una base existente sin version de Alembic",
-    )
     args = parser.parse_args(argv)
 
     try:
-        backup_dir = migrate(args.data_dir, args.adopt_existing)
+        backup_dir = migrate(args.data_dir)
     except Exception as error:
         print(f"Migracion fallida: {error}", file=sys.stderr)
         return 1
