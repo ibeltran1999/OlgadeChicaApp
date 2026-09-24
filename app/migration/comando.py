@@ -73,7 +73,8 @@ def _table_names(database_path: Path) -> set[str]:
         rows = connection.execute(
             "SELECT name FROM sqlite_master "
             "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
-        )
+        ).fetchall()
+
     return {row[0] for row in rows}
 
 

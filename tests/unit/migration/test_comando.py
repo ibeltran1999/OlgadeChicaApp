@@ -28,7 +28,8 @@ class ComandoMigracionTestCase(unittest.TestCase):
             filas = conexion.execute(
                 "SELECT name FROM sqlite_master "
                 "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
-            )
+            ).fetchall()
+    
         return {fila[0] for fila in filas}
 
     def version_de_alembic(self):
