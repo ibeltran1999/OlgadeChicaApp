@@ -1,6 +1,7 @@
 import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -24,7 +25,7 @@ class ComandoMigracionTestCase(unittest.TestCase):
         self.directorio_temporal.cleanup()
 
     def nombres_de_tablas(self):
-        with sqlite3.connect(self.ruta_base_datos) as conexion:
+        with closing(sqlite3.connect(self.ruta_base_datos)) as conexion:
             filas = conexion.execute(
                 "SELECT name FROM sqlite_master "
                 "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
@@ -33,7 +34,7 @@ class ComandoMigracionTestCase(unittest.TestCase):
         return {fila[0] for fila in filas}
 
     def version_de_alembic(self):
-        with sqlite3.connect(self.ruta_base_datos) as conexion:
+        with closing(sqlite3.connect(self.ruta_base_datos)) as conexion:
             return conexion.execute(
                 "SELECT version_num FROM alembic_version"
             ).fetchone()[0]

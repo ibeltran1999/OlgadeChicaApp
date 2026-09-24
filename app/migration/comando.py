@@ -1,5 +1,5 @@
 import argparse
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import datetime, timezone
 import os
 from pathlib import Path
@@ -58,7 +58,7 @@ def _check_integrity(database_path: Path) -> None:
     if not database_path.exists():
         return
 
-    with sqlite3.connect(database_path) as connection:
+    with closing(sqlite3.connect(database_path)) as connection:
         result = connection.execute("PRAGMA integrity_check").fetchone()
 
     if result != ("ok",):
@@ -69,7 +69,7 @@ def _table_names(database_path: Path) -> set[str]:
     if not database_path.exists():
         return set()
 
-    with sqlite3.connect(database_path) as connection:
+    with closing(sqlite3.connect(database_path)) as connection:
         rows = connection.execute(
             "SELECT name FROM sqlite_master "
             "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
