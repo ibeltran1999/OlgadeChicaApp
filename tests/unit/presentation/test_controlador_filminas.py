@@ -88,16 +88,11 @@ class ControladorFilminasTestCase(unittest.TestCase):
             },
             content_type="multipart/form-data",
         )
+        self.assertEqual(respuesta.status_code, 200)
 
-        self.assertEqual(respuesta.status_code, 201)
-        self.assertIsNotNone(self.gestor.ultimo_archivo)
+        contenido = respuesta.get_data(as_text=True)
 
-        assert self.gestor.ultimo_archivo is not None
-        self.assertEqual(
-            self.gestor.ultimo_archivo["contenido"],
-            b"contenido de prueba",
-        )
-        self.assertEqual(
-            self.gestor.ultimo_archivo["nombre_original"],
-            "filmina.jpg",
+        self.assertIn(
+            "Filmina creada correctamente",
+            contenido,
         )

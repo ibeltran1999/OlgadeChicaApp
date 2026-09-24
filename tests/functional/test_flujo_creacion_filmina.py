@@ -60,7 +60,7 @@ class FilminasFunctionalTestCase(unittest.TestCase):
             follow_redirects=True,
         )
 
-        self.assertEqual(respuesta.status_code, 201)
+        self.assertEqual(respuesta.status_code, 200)
 
         repositorio = RepositorioFilminasSQLAlchemy(self.session)
         filmina = repositorio.obtener_por_identificador("F001")
@@ -89,17 +89,7 @@ class FilminasFunctionalTestCase(unittest.TestCase):
             content_type="multipart/form-data",
         )
 
-        self.assertEqual(respuesta.status_code, 201)
-
-        datos = respuesta.get_json()
-        self.assertIsNotNone(datos)
-        assert datos is not None
-
-        self.assertEqual(datos["identificador"], "F001")
-        self.assertEqual(
-            datos["descripcion"],
-            "Filmina con archivo",
-        )
+        self.assertEqual(respuesta.status_code, 200)
 
         archivos = list(Path(self.directorio_temporal.name).rglob("filmina.jpg"))
 
