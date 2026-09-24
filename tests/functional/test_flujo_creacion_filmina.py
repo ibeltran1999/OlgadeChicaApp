@@ -75,3 +75,46 @@ class FilminasFunctionalTestCase(unittest.TestCase):
         self.assertEqual(filmina.identificador, "F001")
         self.assertEqual(filmina.descripcion, "Filmina funcional")
         self.assertEqual(filmina.fecha, date(2024, 1, 15))
+
+    def test_crear_filmina_con_archivo_desde_formulario(self) -> None:
+        contenido = b"contenido de prueba"
+
+        respuesta = self.client.post(
+            "/filminas",
+            data={
+                "descripcion": "Filmina con archivo",
+                "fecha": "2024-01-15",
+                "procedencia": "BLAA",
+                "archivo": (
+                    BytesIO(contenido),
+                    "filmina.jpg",
+                ),
+            },
+            content_type="multipart/form-data",
+        )
+
+        self.assertEqual(respuesta.status_code, 201)
+
+        datos = respuesta.get_json()
+        self.assertIsNotNone(datos)
+        assert datos is not None
+
+        self.assertEqual(datos["identificador"], "F001")
+        self.assertEqual(
+            datos["descripcion"],
+            "Filmina con archivo",
+        )
+
+        archivos = list(
+            Path(self.directorio_temporal.name).rglob("filmina.jpg")
+        )
+
+        self.assertEqual(len(archivos), 1)
+        self.assertEqual(archivos[0].read_bytes(), contenido)
+
+        repositorio = RepositorioFilminasSQLAlchemy(self.session)
+        filmina = repositorio.obtener_por_identificador("F001")
+
+        self.assertIsNotNone(filmina)
+        assert filmina is not None
+        self.assertIsNotNone(filmina.archivo)
