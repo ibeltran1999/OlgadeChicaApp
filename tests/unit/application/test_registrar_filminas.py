@@ -6,9 +6,6 @@ from faker import Faker
 from app.domain import Filmina, Archivo
 from app.application.registrar_filmina import RegistrarFilmina
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
-from app.persistence.almacenamiento_archivos_local import (
-    AlmacenamientoArchivosLocal
-)
 
 
 class RepositorioFilminasEnMemoria:
@@ -22,6 +19,25 @@ class RepositorioFilminasEnMemoria:
 class GeneradorIdentificadoresEnMemoria:
     def generar_identificador_filmina(self):
         return "F001"
+
+class AlmacenamientoArchivosEnMemoria:
+    def __init__(self) -> None:
+        self.archivo_guardado = None
+
+    def guardar(
+        self,
+        contenido,
+        categoria,
+        identificador,
+        nombre_original,
+        tipo,
+    ):
+        self.archivo_guardado = Archivo(
+            ruta=f"{categoria}/{identificador}/{nombre_original}",
+            nombre=nombre_original,
+            tipo=tipo,
+        )
+        return self.archivo_guardado
 
 
 class RegistrarFilminaTestCase(unittest.TestCase):
@@ -72,8 +88,7 @@ class RegistrarFilminaTestCase(unittest.TestCase):
     def test_registrar_filmina_sin_archivo(self):
         repositorio = RepositorioFilminasEnMemoria()
         generador = GeneradorIdentificadoresEnMemoria()
-        almacenamiento = AlmacenamientoArchivosLocal(
-            self.directorio_temporal.name)
+        almacenamiento = AlmacenamientoArchivosEnMemoria()
 
         caso_de_uso = RegistrarFilmina(repositorio, generador, almacenamiento)
         datos_filmina_1 = self.datos_filminas[0]
@@ -98,9 +113,7 @@ class RegistrarFilminaTestCase(unittest.TestCase):
     def test_registrar_filmina_con_archivo(self) -> None:
         repositorio = RepositorioFilminasEnMemoria()
         generador = GeneradorIdentificadoresEnMemoria()
-        almacenamiento = AlmacenamientoArchivosLocal(
-            self.directorio_temporal.name
-        )
+        almacenamiento = AlmacenamientoArchivosEnMemoria()
 
         caso_de_uso = RegistrarFilmina(
             repositorio,
