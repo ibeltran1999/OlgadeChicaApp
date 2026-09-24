@@ -7,6 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 if TYPE_CHECKING:
     from app.persistence.modelos.modelo_archivo import ArchivoModel
 
+
 class Base(DeclarativeBase):
     pass
 

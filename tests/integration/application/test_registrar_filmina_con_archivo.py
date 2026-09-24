@@ -28,9 +28,7 @@ class RegistrarFilminaConArchivoTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.directorio_temporal = tempfile.TemporaryDirectory()
 
-        self.almacenamiento = AlmacenamientoArchivosLocal(
-            self.directorio_temporal.name
-        )
+        self.almacenamiento = AlmacenamientoArchivosLocal(self.directorio_temporal.name)
         self.repositorio = RepositorioFalso()
 
         self.gestor = RegistrarFilmina(
@@ -68,10 +66,7 @@ class RegistrarFilminaConArchivoTestCase(unittest.TestCase):
 
         self.assertIs(self.repositorio.filmina_guardada, resultado)
 
-        ruta_fisica = (
-            Path(self.directorio_temporal.name)
-            / resultado.archivo.ruta
-        )
+        ruta_fisica = Path(self.directorio_temporal.name) / resultado.archivo.ruta
 
         self.assertTrue(ruta_fisica.exists())
         self.assertEqual(ruta_fisica.read_bytes(), contenido)

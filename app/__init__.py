@@ -31,7 +31,7 @@ def create_app() -> Flask:
     session_factory = sessionmaker(bind=engine)
     session = session_factory()
 
-    carpeta_storage = Path(app.instance_path)/"storage"
+    carpeta_storage = Path(app.instance_path) / "storage"
     carpeta_storage.mkdir(parents=True, exist_ok=True)
 
     repositorio = RepositorioFilminasSQLAlchemy(session)

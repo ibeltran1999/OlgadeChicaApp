@@ -43,16 +43,16 @@ class RepositorioFilminasSQLAlchemy:
             archivo = Archivo(
                 ruta=modelo.archivo.ruta,
                 nombre=modelo.archivo.nombre,
-                tipo=TipoArchivo(modelo.archivo.tipo)
+                tipo=TipoArchivo(modelo.archivo.tipo),
             )
-            
+
         filmina = Filmina(
             identificador=modelo.identificador,
             descripcion=modelo.descripcion,
             fecha=modelo.fecha,
             procedencia=ProcedenciaFilmina(modelo.procedencia),
         )
-        
+
         if archivo is not None:
             filmina.agregar_archivo(archivo)
 

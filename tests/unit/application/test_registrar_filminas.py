@@ -20,6 +20,7 @@ class GeneradorIdentificadoresEnMemoria:
     def generar_identificador_filmina(self):
         return "F001"
 
+
 class AlmacenamientoArchivosEnMemoria:
     def __init__(self) -> None:
         self.archivo_guardado = None
@@ -82,6 +83,7 @@ class RegistrarFilminaTestCase(unittest.TestCase):
                     "tipo": TipoArchivo(tipo),
                 }
             )
+
     def tearDown(self) -> None:
         self.directorio_temporal.cleanup()
 

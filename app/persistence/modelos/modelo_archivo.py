@@ -7,6 +7,7 @@ from app.persistence.modelos.modelo_filmina import Base
 if TYPE_CHECKING:
     from app.persistence.modelos.modelo_filmina import FilminaModel
 
+
 class ArchivoModel(Base):
     __tablename__ = "archivos"
 

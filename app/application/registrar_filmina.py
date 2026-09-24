@@ -22,11 +22,11 @@ class RegistrarFilmina:
                 contenido=archivo["contenido"],
                 categoria="filminas",
                 identificador=identificador,
-                nombre_original= archivo["nombre_original"],
+                nombre_original=archivo["nombre_original"],
                 tipo=archivo["tipo"],
             )
             filmina.agregar_archivo(archivo_guardado)
-            
+
         self.repositorio.guardar(filmina)
 
         return filmina

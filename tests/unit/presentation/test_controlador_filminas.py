@@ -13,7 +13,7 @@ from app.presentation.controladores.controlador_filminas import (
 class RegistrarFilminaFalso:
     def __init__(self) -> None:
         self.ultima_filmina: Filmina | None = None
-        self.ultimo_archivo: None 
+        self.ultimo_archivo: None
 
     def ejecutar(
         self,
@@ -22,7 +22,7 @@ class RegistrarFilminaFalso:
         procedencia: str,
         archivo=None,
     ):
-        self.ultimo_archivo= archivo
+        self.ultimo_archivo = archivo
         self.ultima_filmina = Filmina(
             identificador="F001",
             descripcion=descripcion,
@@ -84,12 +84,9 @@ class ControladorFilminasTestCase(unittest.TestCase):
                 "descripcion": "Filmina con archivo",
                 "fecha": "2026-09-01",
                 "procedencia": "BLAA",
-                "archivo":(
-                    BytesIO(b"contenido de prueba"),
-                    "filmina.jpg"
-                )
+                "archivo": (BytesIO(b"contenido de prueba"), "filmina.jpg"),
             },
-            content_type="multipart/form-data"
+            content_type="multipart/form-data",
         )
 
         self.assertEqual(respuesta.status_code, 201)
@@ -104,4 +101,3 @@ class ControladorFilminasTestCase(unittest.TestCase):
             self.gestor.ultimo_archivo["nombre_original"],
             "filmina.jpg",
         )
-

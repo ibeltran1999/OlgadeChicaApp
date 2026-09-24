@@ -14,9 +14,7 @@ from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import (
     RepositorioFilminasSQLAlchemy,
 )
-from app.persistence.almacenamiento_archivos_local import (
-    AlmacenamientoArchivosLocal
-)
+from app.persistence.almacenamiento_archivos_local import AlmacenamientoArchivosLocal
 from app.presentation.controladores.controlador_filminas import (
     crear_controlador_filminas,
 )
@@ -39,9 +37,7 @@ class FilminasFunctionalTestCase(unittest.TestCase):
 
         repositorio = RepositorioFilminasSQLAlchemy(session)
         generador = GeneradorIdentificadoresFalso()
-        almacenamiento = AlmacenamientoArchivosLocal(
-            self.directorio_temporal.name
-        )
+        almacenamiento = AlmacenamientoArchivosLocal(self.directorio_temporal.name)
         gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
 
         self.app = Flask(__name__)
@@ -105,9 +101,7 @@ class FilminasFunctionalTestCase(unittest.TestCase):
             "Filmina con archivo",
         )
 
-        archivos = list(
-            Path(self.directorio_temporal.name).rglob("filmina.jpg")
-        )
+        archivos = list(Path(self.directorio_temporal.name).rglob("filmina.jpg"))
 
         self.assertEqual(len(archivos), 1)
         self.assertEqual(archivos[0].read_bytes(), contenido)

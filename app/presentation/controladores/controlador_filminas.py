@@ -34,9 +34,7 @@ def crear_controlador_filminas(gestor) -> Blueprint:
             archivo = None
 
             if archivo_subido is not None and archivo_subido.filename:
-                extension = Path(
-                    archivo_subido.filename
-                ).suffix[1:].upper()
+                extension = Path(archivo_subido.filename).suffix[1:].upper()
 
                 archivo = {
                     "contenido": archivo_subido.read(),
@@ -54,12 +52,16 @@ def crear_controlador_filminas(gestor) -> Blueprint:
         except (KeyError, TypeError, ValueError) as error:
             return jsonify({"error": str(error)}), 400
 
-        return jsonify(
-            {
-                "identificador": filmina.identificador,
-                "descripcion": filmina.descripcion,
-                "fecha": filmina.fecha.isoformat(),
-                "procedencia": filmina.procedencia.value,
-            }
-        ), 201
+        return (
+            jsonify(
+                {
+                    "identificador": filmina.identificador,
+                    "descripcion": filmina.descripcion,
+                    "fecha": filmina.fecha.isoformat(),
+                    "procedencia": filmina.procedencia.value,
+                }
+            ),
+            201,
+        )
+
     return controlador
