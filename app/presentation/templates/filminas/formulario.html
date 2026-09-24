@@ -13,7 +13,11 @@
     <main class="contenedor">
         <h1>Registrar Filmina</h1>
 
-        <form method="post" action="/filminas">
+        <form
+            method="post"
+            action="/filminas"
+            enctype="multipart/form-data"
+        >
             <label for="descripcion">Descripción</label>
             <textarea
                 id="descripcion"
@@ -36,6 +40,14 @@
                     Archivo Pedro Felipe Hoyos Korvel
                 </option>
             </select>
+
+            <label for="archivo">Archivo opcional</label>
+            <input
+                id="archivo"
+                name="archivo"
+                type="file"
+                accept=".jpg,.cr2,.png,.pdf"
+            >
 
             <button type="submit">Guardar filmina</button>
         </form>

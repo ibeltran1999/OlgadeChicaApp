@@ -1,9 +1,11 @@
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 from flask import Blueprint, jsonify, request, render_template
 
 from app.application.registrar_filmina import RegistrarFilmina
+from app.domain.enums import TipoArchivo
 
 
 def crear_controlador_filminas(gestor) -> Blueprint:
@@ -19,35 +21,45 @@ def crear_controlador_filminas(gestor) -> Blueprint:
 
     @controlador.post("/filminas")
     def crear_filmina() -> tuple[Any, int]:
-        datos: Any
-
-        if request.form:
-            datos = request.form
-        else:
-            datos = request.get_json(silent=True)
-
-        if not isinstance(datos, dict):
-            return jsonify({"error": "Datos inválidos"}), 400
-
         try:
+            datos = request.form
+
+            if not datos:
+                datos = request.get_json(silent=True)
+
+            if datos is None:
+                return jsonify({"error": "Datos inválidos"}), 400
+
+            archivo_subido = request.files.get("archivo")
+            archivo = None
+
+            if archivo_subido is not None and archivo_subido.filename:
+                extension = Path(
+                    archivo_subido.filename
+                ).suffix[1:].upper()
+
+                archivo = {
+                    "contenido": archivo_subido.read(),
+                    "nombre_original": archivo_subido.filename,
+                    "tipo": TipoArchivo(extension),
+                }
+
             filmina = gestor.ejecutar(
                 descripcion=datos["descripcion"],
                 fecha=date.fromisoformat(datos["fecha"]),
                 procedencia=datos["procedencia"],
+                archivo=archivo,
             )
+
         except (KeyError, TypeError, ValueError) as error:
             return jsonify({"error": str(error)}), 400
 
-        return (
-            jsonify(
-                {
-                    "identificador": filmina.identificador,
-                    "descripcion": filmina.descripcion,
-                    "fecha": filmina.fecha.isoformat(),
-                    "procedencia": filmina.procedencia.value,
-                }
-            ),
-            201,
-        )
-
+        return jsonify(
+            {
+                "identificador": filmina.identificador,
+                "descripcion": filmina.descripcion,
+                "fecha": filmina.fecha.isoformat(),
+                "procedencia": filmina.procedencia.value,
+            }
+        ), 201
     return controlador
