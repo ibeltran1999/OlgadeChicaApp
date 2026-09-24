@@ -8,7 +8,6 @@ from app.application.generador_identificadores import (
 )
 from app.application.registrar_filmina import RegistrarFilmina
 from app.application.registrar_tag import RegistrarTag
-from app.persistence.modelos import Base
 from app.persistence.repositorio_filminas import (
     RepositorioFilminasSQLAlchemy,
 )
@@ -29,7 +28,6 @@ def create_app() -> Flask:
 
     ruta_base_datos = Path(app.instance_path) / "olga.db"
     engine = create_engine(f"sqlite:///{ruta_base_datos}")
-    Base.metadata.create_all(engine)
 
     session_factory = sessionmaker(bind=engine)
     session = session_factory()

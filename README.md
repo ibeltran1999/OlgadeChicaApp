@@ -276,6 +276,12 @@ Instalar las dependencias:
 pip install -r requirements.txt
 ```
 
+Inicializar o actualizar el esquema de la base de datos:
+
+```bash
+alembic upgrade head
+```
+
 Ejecutar la aplicación:
 
 ```bash
@@ -292,9 +298,19 @@ python -m unittest discover tests -v
 
 Las pruebas unitarias se ejecutan sin depender de una base de datos real. Para probar el almacenamiento local se utiliza un directorio temporal, que se elimina al terminar cada prueba. Las pruebas de integración utilizarán una base de datos de prueba para verificar la interacción con SQLAlchemy.
 
+Para una base existente creada antes de incorporar Alembic, hacer primero un respaldo y marcar la revisión inicial sin recrear las tablas:
+
+```bash
+alembic stamp 20260924_0001
+```
+
+Las futuras modificaciones del esquema deben hacerse mediante nuevas revisiones de Alembic. `Base.metadata.create_all()` no se ejecuta al iniciar la aplicación.
+
 ## Integración continua
 
 El workflow de GitHub Actions ejecuta Black y la suite de pruebas cuando se hace `push` a `main` o a una rama `feature/**`.
+
+Los tags con formato `vX.Y.Z` generan además un paquete versionado y una GitHub Release. El paquete no incluye `instance/`, porque allí viven la base de datos y los archivos de los usuarios. El procedimiento de migración, respaldo, actualización y rollback está documentado en [Migración y entrega continua](https://github.com/ibeltran1999/OlgadeChicaApp/wiki/Migracion-y-entrega-continua).
 
 ## Documentación
 
