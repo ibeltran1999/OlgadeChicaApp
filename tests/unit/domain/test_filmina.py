@@ -103,6 +103,27 @@ class FilminaTestCase(unittest.TestCase):
         self.assertIs(filmina_1.bocetos[0], boceto_1)
         self.assertIs(boceto_1.filminas[0], filmina_1)
 
+    def test_permitir_asociar_un_tag_a_filmina(self):
+        datos_filmina_1 = self.datos_filminas[0]
+        datos_tag_1 = self.datos_tags[0]
+
+        filmina_1 = Filmina(
+            identificador=datos_filmina_1["identificador"],
+            descripcion=datos_filmina_1["descripcion"],
+            fecha=datos_filmina_1["fecha"],
+            procedencia=ProcedenciaFilmina(datos_filmina_1["procedencia"]),
+        )
+        tag_1 = Tag(
+            identificador=datos_tag_1["identificador"],
+            nombre=datos_tag_1["nombre"],
+        )
+
+        filmina_1.agregar_tag(tag_1)
+
+        self.assertEqual(len(filmina_1.tags), 1)
+        self.assertIn(tag_1, filmina_1.tags)
+        self.assertIs(filmina_1.tags[0], tag_1)
+
     def test_permitir_crear_filmina_sin_archivo(self):
         datos_filmina = self.datos_filminas[0]
 
