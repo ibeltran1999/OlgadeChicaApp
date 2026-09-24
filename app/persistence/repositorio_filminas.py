@@ -3,7 +3,8 @@ from sqlalchemy import select
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
 from app.domain.archivo import Archivo
 from app.domain.filmina import Filmina
-from app.persistence.modelos import FilminaModel, ArchivoModel
+from app.domain.tag import Tag
+from app.persistence.modelos import ArchivoModel, FilminaModel, TagModel
 
 
 class RepositorioFilminasSQLAlchemy:
@@ -25,6 +26,19 @@ class RepositorioFilminasSQLAlchemy:
                 nombre=filmina.archivo.nombre,
                 tipo=filmina.archivo.tipo.value,
             )
+
+        for tag in filmina.tags:
+            tag_model = self.session.scalar(
+                select(TagModel).where(TagModel.identificador == tag.identificador)
+            )
+
+            if tag_model is None:
+                tag_model = TagModel(
+                    identificador=tag.identificador,
+                    nombre=tag.nombre,
+                )
+
+            modelo.tags.append(tag_model)
 
         self.session.add(modelo)
         self.session.commit()
@@ -55,5 +69,13 @@ class RepositorioFilminasSQLAlchemy:
 
         if archivo is not None:
             filmina.agregar_archivo(archivo)
+
+        for tag_model in modelo.tags:
+            filmina.agregar_tag(
+                Tag(
+                    identificador=tag_model.identificador,
+                    nombre=tag_model.nombre,
+                )
+            )
 
         return filmina
