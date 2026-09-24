@@ -1,6 +1,6 @@
 import unittest
 from datetime import date
-
+from io import BytesIO
 from flask import Flask
 
 from app.domain.enums import ProcedenciaFilmina
@@ -13,13 +13,16 @@ from app.presentation.controladores.controlador_filminas import (
 class RegistrarFilminaFalso:
     def __init__(self) -> None:
         self.ultima_filmina: Filmina | None = None
+        self.ultimo_archivo: None 
 
     def ejecutar(
         self,
         descripcion: str,
         fecha: date,
         procedencia: str,
-    ) -> Filmina:
+        archivo=None,
+    ):
+        self.ultimo_archivo= archivo
         self.ultima_filmina = Filmina(
             identificador="F001",
             descripcion=descripcion,
@@ -73,3 +76,32 @@ class ControladorFilminasTestCase(unittest.TestCase):
         self.assertIn('name="fecha"', contenido)
         self.assertIn('name="procedencia"', contenido)
         self.assertIn("Guardar filmina", contenido)
+
+    def test_crear_filmina_con_archivo(self) -> None:
+        respuesta = self.client.post(
+            "/filminas",
+            data={
+                "descripcion": "Filmina con archivo",
+                "fecha": "2026-09-01",
+                "procedencia": "BLAA",
+                "archivo":(
+                    BytesIO(b"contenido de prueba"),
+                    "filmina.jpg"
+                )
+            },
+            content_type="multipart/form-data"
+        )
+
+        self.assertEqual(respuesta.status_code, 201)
+        self.assertIsNotNone(self.gestor.ultimo_archivo)
+
+        assert self.gestor.ultimo_archivo is not None
+        self.assertEqual(
+            self.gestor.ultimo_archivo["contenido"],
+            b"contenido de prueba",
+        )
+        self.assertEqual(
+            self.gestor.ultimo_archivo["nombre_original"],
+            "filmina.jpg",
+        )
+
