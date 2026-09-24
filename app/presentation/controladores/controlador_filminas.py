@@ -27,6 +27,17 @@ def crear_controlador_filminas(gestor) -> Blueprint:
             if datos is None:
                 return jsonify({"error": "Datos inválidos"}), 400
 
+            if request.form:
+                identificadores = request.form.getlist("tag_identificador")
+                nombres = request.form.getlist("tag_nombre")
+                tags = [
+                    {"identificador": identificador, "nombre": nombre}
+                    for identificador, nombre in zip(identificadores, nombres)
+                    if identificador and nombre
+                ]
+            else:
+                tags = datos.get("tags", [])
+
             archivo_subido = request.files.get("archivo")
             archivo = None
 
@@ -44,6 +55,7 @@ def crear_controlador_filminas(gestor) -> Blueprint:
                 fecha=date.fromisoformat(datos["fecha"]),
                 procedencia=datos["procedencia"],
                 archivo=archivo,
+                tags=tags,
             )
 
         except (KeyError, TypeError, ValueError) as error:

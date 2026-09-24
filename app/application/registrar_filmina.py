@@ -1,5 +1,6 @@
 from app.domain import Filmina
 from app.domain.enums import ProcedenciaFilmina
+from app.domain.tag import Tag
 
 
 class RegistrarFilmina:
@@ -8,7 +9,7 @@ class RegistrarFilmina:
         self.generador = generador
         self.almacenamiento = almacenamiento
 
-    def ejecutar(self, descripcion, fecha, procedencia, archivo=None):
+    def ejecutar(self, descripcion, fecha, procedencia, archivo=None, tags=None):
         identificador = self.generador.generar_identificador_filmina()
         filmina = Filmina(
             identificador=identificador,
@@ -26,6 +27,14 @@ class RegistrarFilmina:
                 tipo=archivo["tipo"],
             )
             filmina.agregar_archivo(archivo_guardado)
+
+        for datos_tag in tags or []:
+            filmina.agregar_tag(
+                Tag(
+                    identificador=datos_tag["identificador"],
+                    nombre=datos_tag["nombre"],
+                )
+            )
 
         self.repositorio.guardar(filmina)
 
