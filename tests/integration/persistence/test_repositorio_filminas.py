@@ -109,9 +109,7 @@ class RepositorioFilminasTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.repositorio.guardar(filmina)
 
-        self.assertIsNone(
-            self.repositorio_tags.obtener_por_identificador("T999")
-        )
+        self.assertIsNone(self.repositorio_tags.obtener_por_identificador("T999"))
 
     def test_no_repetir_asociacion_de_tag_en_una_filmina(self):
         tag = Tag(identificador="T004", nombre="Interior")
@@ -123,10 +121,12 @@ class RepositorioFilminasTestCase(unittest.TestCase):
             fecha=date(2024, 1, 15),
             procedencia=ProcedenciaFilmina.BLAA,
         )
-        filmina.tags.extend([
-            Tag(identificador="T004", nombre="Interior"),
-            Tag(identificador="T004", nombre="Interior"),
-        ])
+        filmina.tags.extend(
+            [
+                Tag(identificador="T004", nombre="Interior"),
+                Tag(identificador="T004", nombre="Interior"),
+            ]
+        )
 
         self.repositorio.guardar(filmina)
 

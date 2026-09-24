@@ -126,14 +126,16 @@ class ControladorFilminasTestCase(unittest.TestCase):
     def test_crear_filmina_con_tres_tags_desde_formulario(self) -> None:
         respuesta = self.client.post(
             "/filminas",
-            data=MultiDict([
-                ("descripcion", "Filmina clasificada"),
-                ("fecha", "2026-09-01"),
-                ("procedencia", "BLAA"),
-                ("tag_identificador", "T001"),
-                ("tag_identificador", "T002"),
-                ("tag_identificador", "T003"),
-            ]),
+            data=MultiDict(
+                [
+                    ("descripcion", "Filmina clasificada"),
+                    ("fecha", "2026-09-01"),
+                    ("procedencia", "BLAA"),
+                    ("tag_identificador", "T001"),
+                    ("tag_identificador", "T002"),
+                    ("tag_identificador", "T003"),
+                ]
+            ),
             content_type="multipart/form-data",
         )
 
@@ -149,13 +151,15 @@ class ControladorFilminasTestCase(unittest.TestCase):
     def test_ignorar_tag_repetido_seleccionado_en_el_formulario(self) -> None:
         respuesta = self.client.post(
             "/filminas",
-            data=MultiDict([
-                ("descripcion", "Filmina clasificada"),
-                ("fecha", "2026-09-01"),
-                ("procedencia", "BLAA"),
-                ("tag_identificador", "T001"),
-                ("tag_identificador", "T001"),
-            ]),
+            data=MultiDict(
+                [
+                    ("descripcion", "Filmina clasificada"),
+                    ("fecha", "2026-09-01"),
+                    ("procedencia", "BLAA"),
+                    ("tag_identificador", "T001"),
+                    ("tag_identificador", "T001"),
+                ]
+            ),
             content_type="multipart/form-data",
         )
 

@@ -37,9 +37,7 @@ class RepositorioFilminasSQLAlchemy:
                     continue
 
                 tag_model = self.session.scalar(
-                    select(TagModel).where(
-                        TagModel.identificador == tag.identificador
-                    )
+                    select(TagModel).where(TagModel.identificador == tag.identificador)
                 )
 
                 if tag_model is None:

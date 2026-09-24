@@ -1,7 +1,15 @@
 from typing import TYPE_CHECKING
 from datetime import date
 
-from sqlalchemy import Column, Date, ForeignKey, Integer, String, Table, UniqueConstraint
+from sqlalchemy import (
+    Column,
+    Date,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
