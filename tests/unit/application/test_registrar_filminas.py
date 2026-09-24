@@ -68,7 +68,7 @@ class RegistrarFilminaTestCase(unittest.TestCase):
             )
     def tearDown(self) -> None:
         self.directorio_temporal.cleanup()
-        
+
     def test_registrar_filmina_sin_archivo(self):
         repositorio = RepositorioFilminasEnMemoria()
         generador = GeneradorIdentificadoresEnMemoria()
@@ -94,3 +94,39 @@ class RegistrarFilminaTestCase(unittest.TestCase):
         self.assertIsNone(filmina.archivo)
         self.assertEqual(len(repositorio.filminas), 1)
         self.assertIs(repositorio.filminas[0], filmina)
+
+    def test_registrar_filmina_con_archivo(self) -> None:
+        repositorio = RepositorioFilminasEnMemoria()
+        generador = GeneradorIdentificadoresEnMemoria()
+        almacenamiento = AlmacenamientoArchivosLocal(
+            self.directorio_temporal.name
+        )
+
+        caso_de_uso = RegistrarFilmina(
+            repositorio,
+            generador,
+            almacenamiento,
+        )
+
+        contenido = b"contenido de prueba"
+        nombre = "filmina.jpg"
+
+        filmina = caso_de_uso.ejecutar(
+            descripcion="Filmina con archivo",
+            fecha=date(2026, 9, 1),
+            procedencia=ProcedenciaFilmina.BLAA.value,
+            archivo={
+                "contenido": contenido,
+                "nombre_original": nombre,
+                "tipo": TipoArchivo.JPG,
+            },
+        )
+
+        self.assertIsNotNone(filmina.archivo)
+        assert filmina.archivo is not None
+
+        self.assertEqual(filmina.identificador, "F001")
+        self.assertEqual(filmina.archivo.nombre, nombre)
+        self.assertEqual(filmina.archivo.tipo, TipoArchivo.JPG)
+        self.assertIs(repositorio.filminas[0], filmina)
+        self.assertIs(almacenamiento.archivo_guardado, filmina.archivo)
