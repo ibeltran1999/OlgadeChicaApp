@@ -1,6 +1,8 @@
 from datetime import date
 from pathlib import Path
 from typing import Any
+from app.persistence.repositorio_filminas import RepositorioFilminasSQLAlchemy
+from app.persistence.repositorio_tags import RepositorioTagsSQLAlchemy
 
 from flask import Blueprint, abort, jsonify, request, render_template, send_file
 
@@ -9,7 +11,10 @@ from app.domain.enums import TipoArchivo
 
 
 def crear_controlador_filminas(
-    gestor, repositorio_tags=None, repositorio_filminas=None, carpeta_storage=None
+    gestor,
+    repositorio_tags: RepositorioTagsSQLAlchemy | None = None,
+    repositorio_filminas: RepositorioFilminasSQLAlchemy | None = None,
+    carpeta_storage: Path | None = None,
 ) -> Blueprint:
     controlador = Blueprint(
         "filminas",
@@ -19,31 +24,46 @@ def crear_controlador_filminas(
 
     @controlador.get("/filminas")
     def listar_filminas() -> str:
-        return render_template(
-            "filminas/listado.html", filminas=repositorio_filminas.listar()
+        filminas = (
+            repositorio_filminas.listar() if repositorio_filminas is not None else []
         )
+
+        return render_template("filminas/listado.html", filminas=filminas)
 
     @controlador.get("/filminas/<identificador>")
     def consultar_filmina(identificador: str) -> str:
+        if repositorio_filminas is None:
+            abort(404)
+
         filmina = repositorio_filminas.obtener_por_identificador(identificador)
+
         if filmina is None:
             abort(404)
+
         return render_template("filminas/detalle.html", filmina=filmina)
 
     @controlador.get("/filminas/<identificador>/archivo")
     def consultar_archivo(identificador: str):
+        if repositorio_filminas is None:
+            abort(404)
+
         filmina = repositorio_filminas.obtener_por_identificador(identificador)
+
         if filmina is None or filmina.archivo is None or carpeta_storage is None:
             abort(404)
+
         raiz = Path(carpeta_storage).resolve()
         ruta = (raiz / filmina.archivo.ruta).resolve()
+
         if not ruta.is_relative_to(raiz) or not ruta.is_file():
             abort(404)
+
         tipos = {
             TipoArchivo.JPG: "image/jpeg",
             TipoArchivo.PNG: "image/png",
             TipoArchivo.PDF: "application/pdf",
         }
+
         respuesta = send_file(
             ruta,
             mimetype=tipos.get(filmina.archivo.tipo, "application/octet-stream"),
@@ -54,7 +74,9 @@ def crear_controlador_filminas(
             ),
             conditional=True,
         )
+
         respuesta.headers["X-Content-Type-Options"] = "nosniff"
+
         return respuesta
 
     @controlador.get("/filminas/nueva")

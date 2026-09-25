@@ -11,7 +11,7 @@
 </head>
 <body>
     <main class="contenedor">
-        <nav class="acciones-principales"><a href="{{ url_for('index') }}">Inicio</a><a href="{{ url_for('filminas.listar_filminas') }}">Consultar Filminas</a></nav>
+        <nav class="acciones-principales"><a href="/">Inicio</a><a href="{{ url_for('filminas.listar_filminas') }}">Consultar Filminas</a></nav>
         <h1>Registrar Filmina</h1>
 
         {% set datos = datos or {} %}
