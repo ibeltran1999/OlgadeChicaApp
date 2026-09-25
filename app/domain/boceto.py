@@ -5,8 +5,12 @@ class Boceto:
         self.fecha = fecha
         self.filminas = []
         self.archivo = None
+        self.tags = []
     
     def agregar_archivo(self, archivo):
         self.archivo = archivo
+        pass
+
+    def agregar_tag(self, tag):
         pass
 
