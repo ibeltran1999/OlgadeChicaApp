@@ -1,0 +1,16 @@
+{% from "componentes/navegacion.html" import navegacion with context %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Plataforma Olga de Chica{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <main class="contenedor">
+        {% block navegacion %}{% endblock %}
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>

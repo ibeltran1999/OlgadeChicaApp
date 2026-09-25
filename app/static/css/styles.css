@@ -1,7 +1,21 @@
 :root {
-    font-family: Arial, sans-serif;
-    color: #2f2f2f;
-    background-color: #f4f1ec;
+    --color-fondo: #f4f1ec;
+    --color-papel: #fffdf8;
+    --color-texto: #332e29;
+    --color-acento: #704f39;
+    --color-acento-hover: #4f3829;
+    --color-borde: #d6cbbd;
+    --radio: 3px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    color: var(--color-texto);
+    background-color: var(--color-fondo);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 body {
@@ -9,22 +23,66 @@ body {
 }
 
 .contenedor {
-    width: min(90%, 700px);
-    margin: 3rem auto;
-    padding: 2rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
+    width: min(calc(100% - 2rem), 56rem);
+    margin: 2.5rem auto;
+    padding: clamp(1.25rem, 4vw, 3rem);
+    background: var(--color-papel);
+    border-top: 3px solid var(--color-acento);
+    overflow-wrap: anywhere;
 }
 
-.acciones-principales {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+h1,
+h2,
+h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--color-acento);
 }
 
 h1 {
-    color: #704f39;
+    margin: 0 0 1.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+a {
+    color: var(--color-acento);
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+}
+
+a:hover {
+    color: var(--color-acento-hover);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-acento);
+    outline-offset: 4px;
+}
+
+.navegacion {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-borde);
+    font-size: 0.9375rem;
+}
+
+.navegacion a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+}
+
+.navegacion a[aria-current="page"] {
+    font-weight: 700;
+    text-decoration-thickness: 2px;
 }
 
 form {
@@ -36,40 +94,77 @@ input,
 textarea,
 select,
 button {
+    min-width: 0;
+    max-width: 100%;
     padding: 0.7rem;
     font: inherit;
 }
 
-button {
-    border: 0;
-    border-radius: 6px;
-    color: white;
-    background-color: #704f39;
-    cursor: pointer;
+input,
+textarea,
+select,
+fieldset {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
 }
 
-button:hover {
-    background-color: #4f3829;
-}
-.modal-confirmacion {
-    border: 0;
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    box-shadow: 0 4px 20px rgb(0 0 0 / 25%);
+input,
+textarea,
+select {
+    color: var(--color-texto);
+    background: var(--color-papel);
 }
 
-.modal-confirmacion::backdrop {
-    background: rgb(0 0 0 / 45%);
+fieldset {
+    min-width: 0;
 }
+
+textarea {
+    resize: vertical;
+}
+
+button,
 .boton {
     display: inline-block;
     padding: 0.7rem 1rem;
-    border-radius: 6px;
-    color: white;
-    background-color: #704f39;
+    border: 1px solid var(--color-acento);
+    border-radius: var(--radio);
+    color: var(--color-papel);
+    background-color: var(--color-acento);
+    font: inherit;
     text-decoration: none;
+    cursor: pointer;
 }
+
+button:hover,
+.boton:hover {
+    color: var(--color-papel);
+    background-color: var(--color-acento-hover);
+    border-color: var(--color-acento-hover);
+}
+
+.modal-confirmacion {
+    position: static;
+    width: 100%;
+    max-width: 40rem;
+    padding: clamp(1rem, 4vw, 2rem);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    color: var(--color-texto);
+    background: var(--color-papel);
+    text-align: center;
+}
+
+.modal-confirmacion::backdrop {
+    background: rgb(51 46 41 / 45%);
+}
+
+@media (max-width: 480px) {
+    .contenedor {
+        margin: 1rem auto;
+    }
+}
+
 .preview-imagen {
     display: block;
     max-width: 100%;

@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Consultar filminas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-<main class="contenedor">
+{% extends "base.html" %}
+{% block titulo %}Consultar filminas{% endblock %}
 
-    <h1>Filminas registradas</h1>
-    <nav class="acciones-principales" aria-label="Navegación">
-        <a href="{{ url_for('index') }}">Inicio</a>
-        <a href="{{ url_for('filminas.mostrar_formulario') }}">Registrar una filmina</a>
-    </nav>
+{% block navegacion %}
+    {{ navegacion([
+        (url_for('index'), 'Inicio'),
+        (url_for('filminas.mostrar_formulario'), 'Registrar una filmina'),
+    ]) }}
+{% endblock %}
+
+{% block contenido %}
+<h1>Filminas registradas</h1>
+
     {% for filmina in filminas %}
     <article class="filmina-resumen">
         <a class="filmina-miniatura" href="{{ url_for('filminas.consultar_filmina', identificador=filmina.identificador) }}" aria-label="Ver filmina {{ filmina.identificador }}">
@@ -34,6 +31,4 @@
     {% else %}
     <p>Aún no hay filminas registradas.</p>
     {% endfor %}
-</main>
-</body>
-</html>
+{% endblock %}

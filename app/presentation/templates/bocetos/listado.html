@@ -1,9 +1,15 @@
-<!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bocetos</title><link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"></head>
-<body><main class="contenedor">
-<nav class="acciones-principales"><a href="{{ url_for('index') }}">Inicio</a><a href="{{ url_for('bocetos.listar') }}">Consultar bocetos</a><a href="{{ url_for('bocetos.nuevo') }}">Registrar boceto</a></nav>
+{% extends "base.html" %}
+{% block titulo %}Bocetos{% endblock %}
 
+{% block navegacion %}
+    {{ navegacion([
+        (url_for('index'), 'Inicio'),
+        (url_for('bocetos.listar'), 'Consultar bocetos'),
+        (url_for('bocetos.nuevo'), 'Registrar boceto'),
+    ]) }}
+{% endblock %}
+
+{% block contenido %}
 <h1>Bocetos registrados</h1>
 {% for boceto in bocetos %}
 <article class="filmina-resumen">
@@ -14,4 +20,4 @@
 <div><h2><a href="{{ url_for('bocetos.detalle', identificador=boceto.identificador) }}">Boceto {{ boceto.identificador }}</a></h2>
 <p>{{ boceto.descripcion }}</p><p>{{ boceto.fecha or 'Fecha desconocida' }}</p></div></article>
 {% else %}<p>Aún no hay bocetos registrados.</p>{% endfor %}
-</main></body></html>
+{% endblock %}

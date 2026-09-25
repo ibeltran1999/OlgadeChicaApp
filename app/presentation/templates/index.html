@@ -1,31 +1,19 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Plataforma Olga de Chica</title>
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/styles.css') }}"
-    >
-</head>
-<body>
-    <main class="contenedor">
-        <h1>Plataforma Olga de Chica</h1>
+{% extends "base.html" %}
+{% block titulo %}Plataforma Olga de Chica{% endblock %}
+
+{% block navegacion %}
+    {{ navegacion([
+        (url_for('recursos.nuevo'), 'Registrar un recurso'),
+        (url_for('recursos.listar'), 'Consultar recursos'),
+        (url_for('bocetos.nuevo'), 'Registrar un boceto'),
+        (url_for('bocetos.listar'), 'Consultar bocetos'),
+        (url_for('filminas.listar_filminas'), 'Consultar filminas'),
+        (url_for('filminas.mostrar_formulario'), 'Registrar una filmina'),
+        (url_for('tags.mostrar_formulario'), 'Crear un tag'),
+    ]) }}
+{% endblock %}
+
+{% block contenido %}
+<h1>Plataforma Olga de Chica</h1>
         <p>Gestión de la colección documental.</p>
-        <nav class="acciones-principales">
-            <a href="{{ url_for('recursos.nuevo') }}">Registrar un recurso</a>
-            <a href="{{ url_for('recursos.listar') }}">Consultar recursos</a>
-            <a href="{{ url_for('bocetos.nuevo') }}">Registrar un boceto</a>
-            <a href="{{ url_for('bocetos.listar') }}">Consultar bocetos</a>
-            <a href="{{ url_for('filminas.listar_filminas') }}">Consultar filminas</a>
-            <a href="{{ url_for('filminas.mostrar_formulario') }}">
-                Registrar una filmina
-            </a>
-            <a href="{{ url_for('tags.mostrar_formulario') }}">
-                Crear un tag
-            </a>
-        </nav>
-    </main>
-</body>
-</html>
+{% endblock %}

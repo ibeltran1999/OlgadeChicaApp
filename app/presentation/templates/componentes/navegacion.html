@@ -1,0 +1,7 @@
+{% macro navegacion(enlaces) %}
+<nav class="navegacion" aria-label="Navegación">
+    {% for destino, etiqueta in enlaces %}
+    <a href="{{ destino }}"{% if request.path == destino %} aria-current="page"{% endif %}>{{ etiqueta }}</a>
+    {% endfor %}
+</nav>
+{% endmacro %}
