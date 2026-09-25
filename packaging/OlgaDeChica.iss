@@ -6,6 +6,7 @@ DefaultDirName={autopf}\OlgaDeChica
 DefaultGroupName=Olga de Chica
 OutputDir=..\release
 OutputBaseFilename=OlgaDeChica-Setup-{#AppVersion}
+SetupIconFile=assets\olgadechicaIcon.ico
 Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64compatible

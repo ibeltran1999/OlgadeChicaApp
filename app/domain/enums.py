@@ -9,7 +9,6 @@ class ProcedenciaFilmina(Enum):
 class TipoRecurso(Enum):
     OBRA_FISICA = "Obra fisica"
     MATERIAL_BLAA = "Material físico consultable en la BLAA"
-    FILMINA_BIBLIOTECA = MATERIAL_BLAA
 
 
 class TipoArchivo(Enum):
