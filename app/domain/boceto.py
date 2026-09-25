@@ -12,5 +12,11 @@ class Boceto:
         pass
 
     def agregar_tag(self, tag):
-        pass
+        if tag in self.tags:
+            return
+
+        if len(self.tags) >= 3:
+            raise ValueError("Un boceto no puede tener mas de tres tags")
+
+        self.tags.append(tag)
 
