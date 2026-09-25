@@ -42,7 +42,7 @@ class RegistrarRecursoTestCase(unittest.TestCase):
                 contenido=b"pdf", nombre_original="material.pdf", tipo=TipoArchivo.PDF
             ),
         )
-        self.assertEqual(recurso.tipo, TipoArchivo.PDF.value)
+        self.assertEqual(recurso.tipo, TipoRecurso.MATERIAL_BLAA.value)
         self.assertIs(recurso.archivo, archivo)
         self.assertIs(recurso.boceto, self.boceto)
         self.storage.guardar.assert_called_once_with(
