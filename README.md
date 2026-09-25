@@ -355,3 +355,16 @@ El proyecto seguirá los siguientes principios:
 * Cambios pequeños y verificables.
 * Trazabilidad entre historias de usuario, pruebas e implementación.
 * Evitar complejidad prematura.
+
+## Inicio de la aplicación instalada
+
+Al abrir OlgaDeChica se inicia Waitress en `127.0.0.1:5000` y se abre el
+navegador predeterminado cuando la página responde. El ejecutable principal
+no muestra consola. Los errores se registran en `aplicacion.log` dentro de
+la carpeta de datos (por defecto, `%LOCALAPPDATA%\OlgaDeChica` en Windows).
+
+Cerrar la pestaña no detiene el servidor. Para cerrarlo por completo en Windows,
+finaliza `OlgaDeChica.exe` desde el Administrador de tareas antes de volver a
+iniciarlo o actualizarlo. Si el puerto 5000 ya está ocupado, el nuevo proceso
+termina y registra el error. En desarrollo, `python run.py` utiliza el mismo
+arranque; se puede detener con Ctrl+C.

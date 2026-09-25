@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-pyinstaller --noconfirm --clean --onedir --name OlgaDeChica `
+pyinstaller --noconfirm --clean --onedir --windowed --name OlgaDeChica `
     --add-data "app/presentation/templates;app/presentation/templates" `
     --add-data "app/static;app/static" `
     run.py
