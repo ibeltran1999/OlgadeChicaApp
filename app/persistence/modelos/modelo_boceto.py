@@ -6,12 +6,14 @@ from app.persistence.modelos.modelo_archivo import ArchivoModel
 from app.persistence.modelos.modelo_tag import TagModel
 
 boceto_tags = Table(
-    "boceto_tags", Base.metadata,
+    "boceto_tags",
+    Base.metadata,
     Column("boceto_id", ForeignKey("bocetos.id"), primary_key=True),
     Column("tag_id", ForeignKey("tags.id"), primary_key=True),
 )
 boceto_filminas = Table(
-    "boceto_filminas", Base.metadata,
+    "boceto_filminas",
+    Base.metadata,
     Column("boceto_id", ForeignKey("bocetos.id"), primary_key=True),
     Column("filmina_id", ForeignKey("filminas.id"), primary_key=True),
 )
@@ -23,7 +25,11 @@ class BocetoModel(Base):
     identificador: Mapped[str] = mapped_column(String(100), unique=True)
     descripcion: Mapped[str] = mapped_column(String(500))
     fecha: Mapped[date | None]
-    archivo_id: Mapped[int | None] = mapped_column(ForeignKey("archivos.id"), unique=True)
-    archivo: Mapped[ArchivoModel | None] = relationship(cascade="all, delete-orphan", single_parent=True)
+    archivo_id: Mapped[int | None] = mapped_column(
+        ForeignKey("archivos.id"), unique=True
+    )
+    archivo: Mapped[ArchivoModel | None] = relationship(
+        cascade="all, delete-orphan", single_parent=True
+    )
     tags: Mapped[list[TagModel]] = relationship(secondary=boceto_tags)
     filminas: Mapped[list[FilminaModel]] = relationship(secondary=boceto_filminas)

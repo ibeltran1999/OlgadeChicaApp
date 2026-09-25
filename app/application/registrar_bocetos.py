@@ -15,14 +15,18 @@ class RegistrarBocetos:
             raise ValueError("Un boceto no puede tener más de tres tags")
         if len({tag.identificador for tag in tags}) != len(tags):
             raise ValueError("No puedes seleccionar el mismo tag más de una vez")
-        boceto = Boceto(self.generador.generar_identificador_boceto(), descripcion, fecha)
+        boceto = Boceto(
+            self.generador.generar_identificador_boceto(), descripcion, fecha
+        )
         for tag in tags:
             boceto.agregar_tag(tag)
         if filmina is not None:
             filmina.agregar_boceto(boceto)
         if archivo is not None:
-            boceto.agregar_archivo(self.almacenamiento.guardar(
-                categoria="bocetos", identificador=boceto.identificador, **archivo
-            ))
+            boceto.agregar_archivo(
+                self.almacenamiento.guardar(
+                    categoria="bocetos", identificador=boceto.identificador, **archivo
+                )
+            )
         self.repositorio.guardar(boceto)
         return boceto

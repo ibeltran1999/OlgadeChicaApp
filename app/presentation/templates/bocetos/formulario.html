@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bocetos</title><link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"></head>
+<body><main class="contenedor">
+<nav class="acciones-principales"><a href="{{ url_for('index') }}">Inicio</a><a href="{{ url_for('bocetos.listar') }}">Consultar bocetos</a><a href="{{ url_for('bocetos.nuevo') }}">Registrar boceto</a></nav>
+
+<h1>Registrar un boceto</h1>
+{% if error %}<p role="alert">{{ error }}</p><p>Si adjuntaste un archivo, vuelve a seleccionarlo.</p>{% endif %}
+<form method="post" action="{{ url_for('bocetos.registrar') }}" enctype="multipart/form-data">
+<label for="descripcion">Descripción</label><textarea id="descripcion" name="descripcion" required>{{ datos.get('descripcion', '') }}</textarea>
+<label for="fecha">Fecha (opcional)</label><input type="date" id="fecha" name="fecha" value="{{ datos.get('fecha', '') }}">
+<fieldset><legend>Tags (hasta tres distintos)</legend>
+{% for numero in range(3) %}
+<label for="tag{{ numero }}">Tag {{ numero + 1 }}</label>
+<select id="tag{{ numero }}" name="tag_identificador"><option value="">Sin tag</option>
+{% for tag in tags %}<option value="{{ tag.identificador }}" {% if seleccionados|length > numero and seleccionados[numero] == tag.identificador %}selected{% endif %}>{{ tag.nombre }}</option>{% endfor %}
+</select>{% endfor %}</fieldset>
+<label for="filmina">Filmina relacionada (opcional)</label>
+<select id="filmina" name="filmina_identificador"><option value="">Sin filmina</option>
+{% for filmina in filminas %}<option value="{{ filmina.identificador }}" {% if datos.get('filmina_identificador') == filmina.identificador %}selected{% endif %}>{{ filmina.identificador }} — {{ filmina.descripcion }}</option>{% endfor %}
+</select>
+<label for="archivo">Archivo digital (opcional)</label><input type="file" id="archivo" name="archivo" accept=".jpg,.png,.pdf,.cr2">
+<button type="submit">Guardar boceto</button></form>
+</main></body></html>

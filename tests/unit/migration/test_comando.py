@@ -5,9 +5,11 @@ from contextlib import closing
 from pathlib import Path
 
 from sqlalchemy import create_engine
+from alembic import command
+from alembic.config import Config
+from app.configuracion import carpeta_recursos, url_base_datos
 
 from app.migration.comando import (
-    BASELINE_REVISION,
     MigrationError,
     migrate,
 )
@@ -55,9 +57,12 @@ class ComandoMigracionTestCase(unittest.TestCase):
                 "filminas",
                 "filmina_tags",
                 "tags",
+                "bocetos",
+                "boceto_tags",
+                "boceto_filminas",
             },
         )
-        self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
+        self.assertEqual(self.version_de_alembic(), "20260925_0002")
         self.assertTrue(respaldo.is_dir())
 
     def test_inicializa_archivo_vacio_y_conserva_respaldo(self):
@@ -68,9 +73,9 @@ class ComandoMigracionTestCase(unittest.TestCase):
         self.assertEqual((respaldo / "olga.db").read_bytes(), b"")
         self.assertIn("tags", self.nombres_de_tablas())
         self.assertIn("filminas", self.nombres_de_tablas())
-        self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
+        self.assertEqual(self.version_de_alembic(), "20260925_0002")
         migrate(self.carpeta_datos)
-        self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
+        self.assertEqual(self.version_de_alembic(), "20260925_0002")
 
     def test_rechaza_base_existente_sin_version_de_alembic(self):
         self.crear_base_legacy()
@@ -83,7 +88,7 @@ class ComandoMigracionTestCase(unittest.TestCase):
         segundo_respaldo = migrate(self.carpeta_datos)
 
         self.assertNotEqual(primer_respaldo, segundo_respaldo)
-        self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
+        self.assertEqual(self.version_de_alembic(), "20260925_0002")
 
     def test_rechaza_migracion_si_existe_bloqueo(self):
         ruta_bloqueo = self.carpeta_datos / ".migration.lock"
@@ -93,6 +98,28 @@ class ComandoMigracionTestCase(unittest.TestCase):
             migrate(self.carpeta_datos)
 
         self.assertTrue(ruta_bloqueo.exists())
+
+    def test_actualiza_baseline_sin_perder_filminas(self):
+        config = Config(str(carpeta_recursos() / "alembic.ini"))
+        config.attributes["database_url"] = url_base_datos(self.carpeta_datos)
+        command.upgrade(config, "20260924_0001")
+        with closing(sqlite3.connect(self.ruta_base_datos)) as conexion:
+            conexion.execute(
+                "INSERT INTO filminas (identificador, descripcion, fecha, procedencia) "
+                "VALUES ('12', 'Conservar', '2020-01-01', 'BLAA')"
+            )
+            conexion.commit()
+
+        migrate(self.carpeta_datos)
+
+        self.assertIn("bocetos", self.nombres_de_tablas())
+        with closing(sqlite3.connect(self.ruta_base_datos)) as conexion:
+            self.assertEqual(
+                conexion.execute(
+                    "SELECT identificador, descripcion FROM filminas"
+                ).fetchall(),
+                [("12", "Conservar")],
+            )
 
 
 if __name__ == "__main__":

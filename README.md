@@ -379,3 +379,30 @@ no reinicia la numeración. No se requiere una migración ni tablas adicionales.
 Los identificadores anteriores no numéricos se conservan y no participan en el
 cálculo. Un registro revertido no consume el número. Si se elimina manualmente
 la filmina con el mayor número, ese número puede volver a utilizarse.
+
+## HU02: registro y consulta de bocetos
+
+Desde el inicio, selecciona **Registrar un boceto**. Introduce su descripción;
+la fecha, el archivo digital y la filmina relacionada son opcionales. Puedes
+seleccionar hasta tres tags distintos ya registrados. Los archivos admitidos
+son JPG, PNG, PDF y CR2.
+
+**Consultar bocetos** muestra los registros por orden de guardado. El detalle
+incluye la fecha disponible, los tags, enlaces a las filminas relacionadas y
+la vista previa o descarga del archivo. La numeración se conserva al reiniciar
+y se asigna dentro de la transacción de registro.
+
+Antes de ejecutar esta versión sobre una base anterior, detén el servidor y
+ejecuta:
+
+```bash
+python -m app.migration.comando
+python run.py
+```
+
+La revisión `20260925_0002` crea las tablas de bocetos y sus asociaciones,
+conservando las filminas existentes. El migrador crea un respaldo previo.
+
+Las pruebas de HU02 cubren el gestor aislado y el flujo con SQLite, incluyendo
+registro sin fecha ni archivo, tags, asociaciones, descarga, consulta tras
+reiniciar, concurrencia y actualización desde el esquema anterior.

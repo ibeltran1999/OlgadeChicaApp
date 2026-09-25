@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bocetos</title><link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"></head>
+<body><main class="contenedor">
+<nav class="acciones-principales"><a href="{{ url_for('index') }}">Inicio</a><a href="{{ url_for('bocetos.listar') }}">Consultar bocetos</a><a href="{{ url_for('bocetos.nuevo') }}">Registrar boceto</a></nav>
+
+<h1>Boceto {{ boceto.identificador }}</h1><p>{{ boceto.descripcion }}</p>
+<p>Fecha: {{ boceto.fecha or 'Fecha desconocida' }}</p>
+<h2>Tags</h2><ul>{% for tag in boceto.tags %}<li>{{ tag.nombre }}</li>{% else %}<li>Sin tags</li>{% endfor %}</ul>
+<h2>Filminas relacionadas</h2><ul>{% for filmina in boceto.filminas %}<li><a href="{{ url_for('filminas.consultar_filmina', identificador=filmina.identificador) }}">Filmina {{ filmina.identificador }}</a></li>{% else %}<li>Sin filmina relacionada</li>{% endfor %}</ul>
+{% if boceto.archivo %}
+<h2>Archivo digital</h2><p>{{ boceto.archivo.nombre }}</p>
+{% set archivo_url = url_for('bocetos.archivo', identificador=boceto.identificador) %}
+{% if boceto.archivo.tipo.value in ['PNG', 'JPG'] %}<img class="preview-imagen" src="{{ archivo_url }}" alt="Boceto {{ boceto.identificador }}">
+{% elif boceto.archivo.tipo.value == 'PDF' %}<iframe class="preview-pdf" src="{{ archivo_url }}" title="Vista previa del boceto"></iframe>
+{% else %}<p>Descarga el archivo CR2 para visualizarlo.</p>{% endif %}
+<p><a href="{{ url_for('bocetos.archivo', identificador=boceto.identificador, descargar=1) }}">Descargar archivo</a></p>
+{% else %}<p>Sin archivo digital</p>{% endif %}
+</main></body></html>

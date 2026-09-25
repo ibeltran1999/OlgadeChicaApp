@@ -49,6 +49,9 @@ def main() -> None:
                     "filminas",
                     "filmina_tags",
                     "tags",
+                    "bocetos",
+                    "boceto_tags",
+                    "boceto_filminas",
                 }
                 if not esperadas <= tablas:
                     raise RuntimeError(f"Faltan tablas: {esperadas - tablas}")

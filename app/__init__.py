@@ -1,3 +1,6 @@
+from app.application.registrar_bocetos import RegistrarBocetos
+from app.persistence.repositorio_bocetos import RepositorioBocetosSQLAlchemy
+from app.presentation.controladores.controlador_bocetos import crear_controlador_bocetos
 from flask import Flask, g, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -54,6 +57,17 @@ def create_app() -> Flask:
     almacenamiento = AlmacenamientoArchivosLocal(carpeta_storage)
     gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
     gestor_tags = RegistrarTag(repositorio_tags)
+    repositorio_bocetos = RepositorioBocetosSQLAlchemy(session)
+    gestor_bocetos = RegistrarBocetos(repositorio_bocetos, generador, almacenamiento)
+    app.register_blueprint(
+        crear_controlador_bocetos(
+            gestor_bocetos,
+            repositorio_bocetos,
+            repositorio_tags,
+            repositorio,
+            carpeta_storage,
+        )
+    )
 
     app.register_blueprint(
         crear_controlador_filminas(
