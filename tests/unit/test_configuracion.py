@@ -26,14 +26,20 @@ class ConfiguracionTestCase(unittest.TestCase):
             ), patch("app.configuracion.sys.frozen", True, create=True), patch(
                 "app.configuracion.sys._MEIPASS", temporal + "/paquete", create=True
             ):
-                self.assertEqual(carpeta_datos(), Path(temporal) / "OlgaDeChica")
+                self.assertEqual(
+                    carpeta_datos(), (Path(temporal) / "OlgaDeChica").resolve()
+                )
                 self.assertEqual(carpeta_recursos(), Path(temporal) / "paquete")
 
     def test_argumento_tiene_prioridad_sobre_variable(self):
         with tempfile.TemporaryDirectory() as temporal:
             with patch.dict(os.environ, {"OLGA_DATA_DIR": temporal + "/entorno"}):
-                self.assertEqual(carpeta_datos(), Path(temporal) / "entorno")
-                self.assertEqual(carpeta_datos(Path(temporal)), Path(temporal))
+                self.assertEqual(
+                    carpeta_datos(), (Path(temporal) / "entorno").resolve()
+                )
+                self.assertEqual(
+                    carpeta_datos(Path(temporal)), Path(temporal).resolve()
+                )
 
     def test_migracion_y_aplicacion_comparten_base_en_windows(self):
         with tempfile.TemporaryDirectory() as temporal:

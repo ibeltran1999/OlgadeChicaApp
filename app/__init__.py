@@ -1,6 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, g, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
+from werkzeug.local import LocalProxy
 from app.configuracion import carpeta_datos, url_base_datos
 
 from app.application.generador_identificadores import (
@@ -26,10 +28,22 @@ def create_app() -> Flask:
 
     datos = carpeta_datos()
     datos.mkdir(parents=True, exist_ok=True)
-    engine = create_engine(url_base_datos(datos))
+    engine = create_engine(url_base_datos(datos), poolclass=NullPool)
 
     session_factory = sessionmaker(bind=engine)
-    session = session_factory()
+
+    def obtener_session():
+        if "database_session" not in g:
+            g.database_session = session_factory()
+        return g.database_session
+
+    session = LocalProxy(obtener_session)
+
+    @app.teardown_appcontext
+    def cerrar_session(error=None):
+        session_actual = g.pop("database_session", None)
+        if session_actual is not None:
+            session_actual.close()
 
     carpeta_storage = datos / "storage"
     carpeta_storage.mkdir(parents=True, exist_ok=True)
