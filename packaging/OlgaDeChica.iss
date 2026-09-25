@@ -17,10 +17,6 @@ RestartApplications=no
 Source: "..\dist\OlgaDeChica\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 Source: "..\dist\OlgaMigracion\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
-[Dirs]
-Name: "{localappdata}\OlgaDeChica"
-Name: "{localappdata}\OlgaDeChica\storage"
-
 [Icons]
 Name: "{group}\Olga de Chica"; Filename: "{app}\OlgaDeChica.exe"
 Name: "{commondesktop}\Olga de Chica"; Filename: "{app}\OlgaDeChica.exe"
@@ -47,7 +43,7 @@ begin
 	if CurStep = ssPostInstall then begin
 		if not Exec(
 			ExpandConstant('{app}\OlgaMigracion.exe'),
-			'--data-dir "' + ExpandConstant('{localappdata}\OlgaDeChica') + '"',
+			'',
 			'', SW_HIDE, ewWaitUntilTerminated, ResultCode) then begin
 			MsgBox('No fue posible ejecutar la migracion de la base de datos.', mbError, MB_OK);
 			Abort;

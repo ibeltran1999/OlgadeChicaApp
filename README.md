@@ -288,6 +288,25 @@ Ejecutar la aplicación:
 python run.py
 ```
 
+## Ubicación de los datos
+
+La aplicación, Alembic y la herramienta de migración comparten
+`app/configuracion.py`. La carpeta contiene `olga.db`, `storage/` y los respaldos:
+
+- `OLGA_DATA_DIR` permite definir una carpeta para todos los puntos de entrada.
+- En Windows se usa por defecto `%LOCALAPPDATA%\OlgaDeChica`.
+- En desarrollo en otros sistemas se usa `instance/` en la raíz del proyecto,
+  independientemente del directorio desde el que se ejecute el comando.
+- `OlgaMigracion.exe --data-dir RUTA` tiene prioridad para esa migración.
+  Si se usa una ruta personalizada, configura también `OLGA_DATA_DIR` al iniciar
+  la aplicación.
+
+Los recursos empaquetados de Alembic se buscan dentro del paquete; los datos
+persistentes nunca se guardan allí. Las rutas personalizadas se expanden y se
+convierten en absolutas; las relativas se interpretan desde el directorio actual.
+`ALEMBIC_DATABASE_URL` deja de utilizarse: configura `OLGA_DATA_DIR` para evitar
+que Alembic y la aplicación apunten a bases distintas.
+
 ## Ejecutar las pruebas
 
 Desde la raíz del proyecto:

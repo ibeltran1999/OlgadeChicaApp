@@ -11,8 +11,14 @@ from typing import Iterator
 from alembic import command
 from alembic.config import Config
 
+from app.configuracion import (
+    carpeta_datos,
+    carpeta_recursos,
+    ruta_base_datos,
+    url_base_datos,
+)
+
 BASELINE_REVISION = "20260924_0001"
-PROJECT_ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
 
 
 class MigrationError(RuntimeError):
@@ -33,10 +39,6 @@ def _migration_lock(data_dir: Path) -> Iterator[None]:
         yield
     finally:
         lock_path.unlink(missing_ok=True)
-
-
-def _database_url(database_path: Path) -> str:
-    return f"sqlite:///{database_path.as_posix()}"
 
 
 def _create_backup(data_dir: Path, database_path: Path) -> Path:
@@ -83,25 +85,15 @@ def _has_alembic_version(database_path: Path) -> bool:
 
 
 def _run_alembic(database_path: Path) -> None:
-    database_url = _database_url(database_path)
-    config = Config(str(PROJECT_ROOT / "alembic.ini"))
-    config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
-
-    previous_url = os.environ.get("ALEMBIC_DATABASE_URL")
-    os.environ["ALEMBIC_DATABASE_URL"] = database_url
-    try:
-        command.upgrade(config, "head")
-    finally:
-        if previous_url is None:
-            os.environ.pop("ALEMBIC_DATABASE_URL", None)
-        else:
-            os.environ["ALEMBIC_DATABASE_URL"] = previous_url
+    config = Config(str(carpeta_recursos() / "alembic.ini"))
+    config.attributes["database_url"] = url_base_datos(database_path.parent)
+    command.upgrade(config, "head")
 
 
-def migrate(data_dir: Path) -> Path:
-    data_dir = data_dir.expanduser().resolve()
+def migrate(data_dir: Path | None = None) -> Path:
+    data_dir = carpeta_datos(data_dir)
     data_dir.mkdir(parents=True, exist_ok=True)
-    database_path = data_dir / "olga.db"
+    database_path = ruta_base_datos(data_dir)
 
     with _migration_lock(data_dir):
         backup_dir = _create_backup(data_dir, database_path)
@@ -119,10 +111,6 @@ def migrate(data_dir: Path) -> Path:
     return backup_dir
 
 
-def _default_data_dir() -> Path:
-    return Path(os.environ.get("OLGA_DATA_DIR", PROJECT_ROOT / "instance"))
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Instala o actualiza los datos de Olga de Chica"
@@ -130,7 +118,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--data-dir",
         type=Path,
-        default=_default_data_dir(),
+        default=None,
         help="Carpeta estable que contiene olga.db y storage",
     )
     args = parser.parse_args(argv)

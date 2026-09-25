@@ -1,5 +1,4 @@
 from logging.config import fileConfig
-import os
 from pathlib import Path
 import sys
 
@@ -8,6 +7,7 @@ from sqlalchemy import engine_from_config, pool
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from app.configuracion import carpeta_datos, url_base_datos
 from app.persistence.modelos import Base
 
 config = context.config
@@ -15,9 +15,11 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-url = os.getenv("ALEMBIC_DATABASE_URL")
-if url:
-    config.set_main_option("sqlalchemy.url", url.replace("%", "%%"))
+url = config.attributes.get("database_url")
+if url is None:
+    carpeta_datos().mkdir(parents=True, exist_ok=True)
+    url = url_base_datos()
+config.set_main_option("sqlalchemy.url", url.replace("%", "%%"))
 
 target_metadata = Base.metadata
 
