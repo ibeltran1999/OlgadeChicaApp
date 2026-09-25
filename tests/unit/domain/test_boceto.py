@@ -46,7 +46,6 @@ class BocetoTestCase(unittest.TestCase):
                 }
             )
 
-
     def test_crear_boceto(self):
         boceto = Boceto(
             identificador="B001",
@@ -72,7 +71,7 @@ class BocetoTestCase(unittest.TestCase):
         datos_archivo_1 = self.datos_archivos[0]
 
         boceto_1 = Boceto(
-            identificador = "B001",
+            identificador="B001",
             descripcion="Descripcion de Prueba",
             fecha=date(2023, 4, 20),
         )
@@ -109,28 +108,26 @@ class BocetoTestCase(unittest.TestCase):
         for tag in tags:
             self.assertIn(tag, boceto_1.tags)
 
+
 def test_no_permitir_asociar_4_tags_a_filmina(self):
-        datos_boceto_1 = self.datos_bocetos[0]
-        datos_3_tags = self.datos_tags[0:3]
-        datos_1_tag = self.datos_tags[3]
-        tags = [
-            Tag(identificador=datos["identificador"], nombre=datos["nombre"])
-            for datos in datos_3_tags
-        ]
-        tag4 = Tag(
-            identificador=datos_1_tag["identificador"], nombre=datos_1_tag["nombre"]
-        )
-        boceto_1 = Boceto(
-            identificador=datos_boceto_1["identificador"],
-            descripcion=datos_boceto_1["descripcion"],
-            fecha=datos_boceto_1["fecha"],
-        )
+    datos_boceto_1 = self.datos_bocetos[0]
+    datos_3_tags = self.datos_tags[0:3]
+    datos_1_tag = self.datos_tags[3]
+    tags = [
+        Tag(identificador=datos["identificador"], nombre=datos["nombre"])
+        for datos in datos_3_tags
+    ]
+    tag4 = Tag(identificador=datos_1_tag["identificador"], nombre=datos_1_tag["nombre"])
+    boceto_1 = Boceto(
+        identificador=datos_boceto_1["identificador"],
+        descripcion=datos_boceto_1["descripcion"],
+        fecha=datos_boceto_1["fecha"],
+    )
 
-        for tag in tags:
-            boceto_1.agregar_tag(tag)
+    for tag in tags:
+        boceto_1.agregar_tag(tag)
 
-        with self.assertRaises(ValueError):
-            boceto_1.agregar_tag(tag4)
+    with self.assertRaises(ValueError):
+        boceto_1.agregar_tag(tag4)
 
-        self.assertEqual(len(boceto_1.tags), 3)
-    
+    self.assertEqual(len(boceto_1.tags), 3)
