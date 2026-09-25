@@ -13,6 +13,12 @@
     <main class="contenedor">
         <h1>Registrar Filmina</h1>
 
+        {% set datos = datos or {} %}
+        {% set seleccionados = seleccionados or [] %}
+        {% if error %}
+        <p role="alert">{{ error }}</p>
+        <p>Revisa los datos. Si adjuntaste un archivo, vuelve a seleccionarlo.</p>
+        {% endif %}
         <form
             method="post"
             action="/filminas"
@@ -23,20 +29,21 @@
                 id="descripcion"
                 name="descripcion"
                 required
-            ></textarea>
+            >{{ datos.get("descripcion", "") }}</textarea>
 
             <label for="fecha">Fecha</label>
             <input
                 id="fecha"
                 name="fecha"
                 type="date"
+                value="{{ datos.get('fecha', '') }}"
                 required
             >
 
             <label for="procedencia">Procedencia</label>
             <select id="procedencia" name="procedencia" required>
-                <option value="BLAA">BLAA</option>
-                <option value="Archivo Pedro Felipe Hoyos Korvel">
+                <option value="BLAA" {% if datos.get("procedencia") == "BLAA" %}selected{% endif %}>BLAA</option>
+                <option value="Archivo Pedro Felipe Hoyos Korvel" {% if datos.get("procedencia") == "Archivo Pedro Felipe Hoyos Korvel" %}selected{% endif %}>
                     Archivo Pedro Felipe Hoyos Korvel
                 </option>
             </select>
@@ -48,7 +55,7 @@
                     <select id="tag_{{ numero }}" name="tag_identificador">
                         <option value="">Sin tag</option>
                         {% for tag in tags %}
-                            <option value="{{ tag.identificador }}">
+                            <option value="{{ tag.identificador }}" {% if seleccionados|length >= numero and seleccionados[numero - 1] == tag.identificador %}selected{% endif %}>
                                 {{ tag.nombre }}
                             </option>
                         {% endfor %}

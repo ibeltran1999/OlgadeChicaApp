@@ -69,7 +69,7 @@ class RepositorioFilminasSQLAlchemy:
                 selectinload(FilminaModel.tags),
                 selectinload(FilminaModel.archivo),
             )
-            .order_by(FilminaModel.fecha.desc(), FilminaModel.identificador)
+            .order_by(FilminaModel.id.asc())
         ).all()
         return [self._a_dominio(modelo) for modelo in modelos]
 

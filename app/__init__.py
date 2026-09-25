@@ -50,7 +50,7 @@ def create_app() -> Flask:
 
     repositorio = RepositorioFilminasSQLAlchemy(session)
     repositorio_tags = RepositorioTagsSQLAlchemy(session)
-    generador = GeneradorIdentificadores()
+    generador = GeneradorIdentificadores(session)
     almacenamiento = AlmacenamientoArchivosLocal(carpeta_storage)
     gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
     gestor_tags = RegistrarTag(repositorio_tags)

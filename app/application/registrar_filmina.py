@@ -9,6 +9,12 @@ class RegistrarFilmina:
         self.almacenamiento = almacenamiento
 
     def ejecutar(self, descripcion, fecha, procedencia, archivo=None, tags=None):
+        tags = list(tags or [])
+        identificadores_tags = [tag.identificador for tag in tags]
+        if len(set(identificadores_tags)) != len(identificadores_tags):
+            raise ValueError("No puedes seleccionar el mismo tag más de una vez.")
+        if len(tags) > 3:
+            raise ValueError("Una filmina no puede tener mas de tres tags")
         identificador = self.generador.generar_identificador_filmina()
         filmina = Filmina(
             identificador=identificador,

@@ -49,8 +49,8 @@ class ConsultaFilminasTestCase(unittest.TestCase):
         cliente = create_app().test_client()
         listado = cliente.get("/filminas").get_data(as_text=True)
         self.assertLess(
-            listado.index(f'href="/filminas/{ids[1]}"'),
             listado.index(f'href="/filminas/{ids[0]}"'),
+            listado.index(f'href="/filminas/{ids[1]}"'),
         )
         self.assertNotIn("<script>", listado)
         respuesta = cliente.get("/filminas/" + ids[1])
@@ -115,3 +115,20 @@ class ConsultaFilminasTestCase(unittest.TestCase):
             conexion.execute("UPDATE archivos SET ruta = ?", ("no-existe.png",))
             conexion.commit()
         self.assertEqual(self.cliente.get(url).status_code, 404)
+
+    def test_registra_despues_de_reiniciar_con_tags(self):
+        self.cliente.post("/tags", json={"identificador": "T1", "nombre": "Paisaje"})
+        datos = {
+            "descripcion": "Primera",
+            "fecha": "2025-01-01",
+            "procedencia": "BLAA",
+            "tags": ["T1"],
+        }
+        primera = self.cliente.post("/filminas", json=datos)
+        self.assertEqual(primera.status_code, 201)
+        segunda = create_app().test_client().post("/filminas", json=datos)
+        self.assertEqual(segunda.status_code, 201)
+        self.assertEqual(
+            int(segunda.get_json()["identificador"]),
+            int(primera.get_json()["identificador"]) + 1,
+        )

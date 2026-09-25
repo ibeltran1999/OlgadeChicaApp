@@ -4,7 +4,7 @@ from typing import Any
 
 from flask import Blueprint, abort, jsonify, request, render_template, send_file
 
-from app.application.registrar_filmina import RegistrarFilmina
+from sqlalchemy.exc import IntegrityError
 from app.domain.enums import TipoArchivo
 
 
@@ -62,6 +62,21 @@ def crear_controlador_filminas(
         tags = repositorio_tags.listar() if repositorio_tags is not None else []
         return render_template("filminas/formulario.html", tags=tags)
 
+    def mostrar_error(mensaje, estado):
+        if request.form:
+            tags = repositorio_tags.listar() if repositorio_tags is not None else []
+            return (
+                render_template(
+                    "filminas/formulario.html",
+                    tags=tags,
+                    error=mensaje,
+                    datos=request.form,
+                    seleccionados=request.form.getlist("tag_identificador"),
+                ),
+                estado,
+            )
+        return jsonify({"error": mensaje}), estado
+
     @controlador.post("/filminas")
     def crear_filmina() -> Any:
         try:
@@ -75,13 +90,13 @@ def crear_controlador_filminas(
                 if request.form
                 else datos.get("tags", [])
             )
-            identificadores = list(
-                dict.fromkeys(
-                    identificador
-                    for identificador in identificadores_recibidos
-                    if identificador
-                )
-            )
+            identificadores = [
+                identificador
+                for identificador in identificadores_recibidos
+                if identificador
+            ]
+            if len(set(identificadores)) != len(identificadores):
+                raise ValueError("No puedes seleccionar el mismo tag más de una vez.")
 
             if repositorio_tags is not None:
                 tags = []
@@ -114,7 +129,12 @@ def crear_controlador_filminas(
             )
 
         except (KeyError, TypeError, ValueError) as error:
-            return jsonify({"error": str(error)}), 400
+            return mostrar_error(str(error), 400)
+        except IntegrityError:
+            return mostrar_error(
+                "No se pudo guardar la filmina por un conflicto con los datos existentes.",
+                409,
+            )
 
         resultado = {
             "identificador": filmina.identificador,

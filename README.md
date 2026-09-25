@@ -368,3 +368,14 @@ finaliza `OlgaDeChica.exe` desde el Administrador de tareas antes de volver a
 iniciarlo o actualizarlo. Si el puerto 5000 ya está ocupado, el nuevo proceso
 termina y registra el error. En desarrollo, `python run.py` utiliza el mismo
 arranque; se puede detener con Ctrl+C.
+
+### Numeración de filminas
+
+El siguiente identificador se calcula a partir del mayor número guardado en
+`filminas`. El cálculo y el registro comparten una transacción de escritura,
+para evitar duplicados entre solicitudes simultáneas. Reiniciar la aplicación
+no reinicia la numeración. No se requiere una migración ni tablas adicionales.
+
+Los identificadores anteriores no numéricos se conservan y no participan en el
+cálculo. Un registro revertido no consume el número. Si se elimina manualmente
+la filmina con el mayor número, ese número puede volver a utilizarse.

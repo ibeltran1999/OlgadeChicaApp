@@ -148,7 +148,7 @@ class ControladorFilminasTestCase(unittest.TestCase):
             ["T001", "T002", "T003"],
         )
 
-    def test_ignorar_tag_repetido_seleccionado_en_el_formulario(self) -> None:
+    def test_rechazar_tag_repetido_seleccionado_en_el_formulario(self) -> None:
         respuesta = self.client.post(
             "/filminas",
             data=MultiDict(
@@ -163,7 +163,20 @@ class ControladorFilminasTestCase(unittest.TestCase):
             content_type="multipart/form-data",
         )
 
-        self.assertEqual(respuesta.status_code, 200)
-        assert self.gestor.ultima_filmina is not None
-        self.assertEqual(len(self.gestor.ultima_filmina.tags), 1)
-        self.assertEqual(self.gestor.ultima_filmina.tags[0].identificador, "T001")
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertIsNone(self.gestor.ultima_filmina)
+        self.assertIn("mismo tag", respuesta.get_data(as_text=True))
+
+    def test_rechaza_tres_tags_iguales_en_json(self):
+        respuesta = self.client.post(
+            "/filminas",
+            json={
+                "descripcion": "Prueba",
+                "fecha": "2024-01-01",
+                "procedencia": "BLAA",
+                "tags": ["T001", "T001", "T001"],
+            },
+        )
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertIn("mismo tag", respuesta.get_json()["error"])
+        self.assertIsNone(self.gestor.ultima_filmina)
