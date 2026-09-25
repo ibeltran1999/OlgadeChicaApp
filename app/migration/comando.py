@@ -99,7 +99,12 @@ def migrate(data_dir: Path | None = None) -> Path:
         backup_dir = _create_backup(data_dir, database_path)
         _check_integrity(database_path)
 
-        if database_path.exists() and not _has_alembic_version(database_path):
+        # Un archivo de cero bytes aún no tiene esquema ni datos que preservar.
+        if (
+            database_path.exists()
+            and database_path.stat().st_size > 0
+            and not _has_alembic_version(database_path)
+        ):
             raise MigrationError(
                 "La base existe pero no tiene version de Alembic; "
                 "debe ser versionada antes de ejecutar esta herramienta."

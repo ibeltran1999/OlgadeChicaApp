@@ -22,6 +22,8 @@
     Registrar otra filmina
 </a>
 
+    <p><a href="{{ url_for('filminas.consultar_filmina', identificador=resultado.identificador) }}">Ver filmina registrada</a></p>
+    <p><a href="{{ url_for('filminas.listar_filminas') }}">Consultar filminas</a></p>
     </dialog>
 </body>
 </html>

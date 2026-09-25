@@ -55,7 +55,11 @@ def create_app() -> Flask:
     gestor = RegistrarFilmina(repositorio, generador, almacenamiento)
     gestor_tags = RegistrarTag(repositorio_tags)
 
-    app.register_blueprint(crear_controlador_filminas(gestor, repositorio_tags))
+    app.register_blueprint(
+        crear_controlador_filminas(
+            gestor, repositorio_tags, repositorio, carpeta_storage
+        )
+    )
     app.register_blueprint(crear_controlador_tags(gestor_tags))
 
     @app.get("/")

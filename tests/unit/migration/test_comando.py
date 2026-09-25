@@ -60,6 +60,18 @@ class ComandoMigracionTestCase(unittest.TestCase):
         self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
         self.assertTrue(respaldo.is_dir())
 
+    def test_inicializa_archivo_vacio_y_conserva_respaldo(self):
+        self.ruta_base_datos.touch()
+
+        respaldo = migrate(self.carpeta_datos)
+
+        self.assertEqual((respaldo / "olga.db").read_bytes(), b"")
+        self.assertIn("tags", self.nombres_de_tablas())
+        self.assertIn("filminas", self.nombres_de_tablas())
+        self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
+        migrate(self.carpeta_datos)
+        self.assertEqual(self.version_de_alembic(), BASELINE_REVISION)
+
     def test_rechaza_base_existente_sin_version_de_alembic(self):
         self.crear_base_legacy()
 

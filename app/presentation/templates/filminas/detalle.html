@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Consultar filminas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<main class="contenedor">
+
+    <h1>Filmina {{ filmina.identificador }}</h1>
+    <dl>
+        <dt>Descripción</dt><dd>{{ filmina.descripcion }}</dd>
+        <dt>Fecha</dt><dd>{{ filmina.fecha.isoformat() }}</dd>
+        <dt>Procedencia</dt><dd>{{ filmina.procedencia.value }}</dd>
+        <dt>Tags</dt>
+        <dd>
+            {% for tag in filmina.tags %}
+                {{ tag.nombre }}{% if not loop.last %}, {% endif %}
+            {% else %}Sin tags{% endfor %}
+        </dd>
+        <dt>Archivo digital</dt>
+        <dd>{% if filmina.archivo %}{{ filmina.archivo.nombre }} ({{ filmina.archivo.tipo.value }}){% else %}Sin archivo digital{% endif %}</dd>
+    </dl>
+    {% if filmina.archivo %}
+    {% set archivo_url = url_for('filminas.consultar_archivo', identificador=filmina.identificador) %}
+    <section aria-label="Vista previa del archivo">
+        <h2>Vista previa</h2>
+        {% if filmina.archivo.tipo.value in ['JPG', 'PNG'] %}
+        <a href="{{ archivo_url }}" target="_blank" rel="noopener">
+            <img class="preview-imagen" src="{{ archivo_url }}" alt="Archivo de la filmina {{ filmina.identificador }}" loading="lazy">
+        </a>
+        {% elif filmina.archivo.tipo.value == 'PDF' %}
+        <iframe class="preview-pdf" src="{{ archivo_url }}" title="Vista previa de {{ filmina.archivo.nombre }}"></iframe>
+        <p>Si el visor no está disponible, puedes <a href="{{ archivo_url }}" target="_blank" rel="noopener">abrir el PDF</a> o descargarlo.</p>
+        {% else %}
+        <p>La vista previa no está disponible para archivos CR2. Descarga el archivo para abrirlo con un programa compatible.</p>
+        {% endif %}
+        <p><a href="{{ url_for('filminas.consultar_archivo', identificador=filmina.identificador, descargar=1) }}">Descargar archivo</a></p>
+    </section>
+    {% endif %}
+    <a href="{{ url_for('filminas.listar_filminas') }}">Volver a las filminas</a>
+</main>
+</body>
+</html>

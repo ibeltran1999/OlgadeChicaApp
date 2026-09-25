@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.domain.enums import ProcedenciaFilmina, TipoArchivo
@@ -59,6 +60,21 @@ class RepositorioFilminasSQLAlchemy:
         if modelo is None:
             return None
 
+        return self._a_dominio(modelo)
+
+    def listar(self) -> list[Filmina]:
+        modelos = self.session.scalars(
+            select(FilminaModel)
+            .options(
+                selectinload(FilminaModel.tags),
+                selectinload(FilminaModel.archivo),
+            )
+            .order_by(FilminaModel.fecha.desc(), FilminaModel.identificador)
+        ).all()
+        return [self._a_dominio(modelo) for modelo in modelos]
+
+    @staticmethod
+    def _a_dominio(modelo: FilminaModel) -> Filmina:
         archivo = None
 
         if modelo.archivo is not None:

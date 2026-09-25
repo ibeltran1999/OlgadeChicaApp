@@ -2,18 +2,60 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, abort, jsonify, request, render_template, send_file
 
 from app.application.registrar_filmina import RegistrarFilmina
 from app.domain.enums import TipoArchivo
 
 
-def crear_controlador_filminas(gestor, repositorio_tags=None) -> Blueprint:
+def crear_controlador_filminas(
+    gestor, repositorio_tags=None, repositorio_filminas=None, carpeta_storage=None
+) -> Blueprint:
     controlador = Blueprint(
         "filminas",
         __name__,
         template_folder="../templates",
     )
+
+    @controlador.get("/filminas")
+    def listar_filminas() -> str:
+        return render_template(
+            "filminas/listado.html", filminas=repositorio_filminas.listar()
+        )
+
+    @controlador.get("/filminas/<identificador>")
+    def consultar_filmina(identificador: str) -> str:
+        filmina = repositorio_filminas.obtener_por_identificador(identificador)
+        if filmina is None:
+            abort(404)
+        return render_template("filminas/detalle.html", filmina=filmina)
+
+    @controlador.get("/filminas/<identificador>/archivo")
+    def consultar_archivo(identificador: str):
+        filmina = repositorio_filminas.obtener_por_identificador(identificador)
+        if filmina is None or filmina.archivo is None or carpeta_storage is None:
+            abort(404)
+        raiz = Path(carpeta_storage).resolve()
+        ruta = (raiz / filmina.archivo.ruta).resolve()
+        if not ruta.is_relative_to(raiz) or not ruta.is_file():
+            abort(404)
+        tipos = {
+            TipoArchivo.JPG: "image/jpeg",
+            TipoArchivo.PNG: "image/png",
+            TipoArchivo.PDF: "application/pdf",
+        }
+        respuesta = send_file(
+            ruta,
+            mimetype=tipos.get(filmina.archivo.tipo, "application/octet-stream"),
+            download_name=filmina.archivo.nombre,
+            as_attachment=(
+                request.args.get("descargar") == "1"
+                or filmina.archivo.tipo not in tipos
+            ),
+            conditional=True,
+        )
+        respuesta.headers["X-Content-Type-Options"] = "nosniff"
+        return respuesta
 
     @controlador.get("/filminas/nueva")
     def mostrar_formulario() -> str:
