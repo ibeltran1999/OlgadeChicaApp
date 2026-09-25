@@ -58,11 +58,12 @@ class ComandoMigracionTestCase(unittest.TestCase):
                 "filmina_tags",
                 "tags",
                 "bocetos",
+                "recursos",
                 "boceto_tags",
                 "boceto_filminas",
             },
         )
-        self.assertEqual(self.version_de_alembic(), "20260925_0002")
+        self.assertEqual(self.version_de_alembic(), "20260925_0003")
         self.assertTrue(respaldo.is_dir())
 
     def test_inicializa_archivo_vacio_y_conserva_respaldo(self):
@@ -73,9 +74,9 @@ class ComandoMigracionTestCase(unittest.TestCase):
         self.assertEqual((respaldo / "olga.db").read_bytes(), b"")
         self.assertIn("tags", self.nombres_de_tablas())
         self.assertIn("filminas", self.nombres_de_tablas())
-        self.assertEqual(self.version_de_alembic(), "20260925_0002")
+        self.assertEqual(self.version_de_alembic(), "20260925_0003")
         migrate(self.carpeta_datos)
-        self.assertEqual(self.version_de_alembic(), "20260925_0002")
+        self.assertEqual(self.version_de_alembic(), "20260925_0003")
 
     def test_rechaza_base_existente_sin_version_de_alembic(self):
         self.crear_base_legacy()
@@ -88,7 +89,7 @@ class ComandoMigracionTestCase(unittest.TestCase):
         segundo_respaldo = migrate(self.carpeta_datos)
 
         self.assertNotEqual(primer_respaldo, segundo_respaldo)
-        self.assertEqual(self.version_de_alembic(), "20260925_0002")
+        self.assertEqual(self.version_de_alembic(), "20260925_0003")
 
     def test_rechaza_migracion_si_existe_bloqueo(self):
         ruta_bloqueo = self.carpeta_datos / ".migration.lock"
@@ -120,6 +121,29 @@ class ComandoMigracionTestCase(unittest.TestCase):
                 ).fetchall(),
                 [("12", "Conservar")],
             )
+
+    def test_actualiza_hu02_conservando_bocetos(self):
+        config = Config(str(carpeta_recursos() / "alembic.ini"))
+        config.attributes["database_url"] = url_base_datos(self.carpeta_datos)
+        command.upgrade(config, "20260925_0002")
+        with closing(sqlite3.connect(self.ruta_base_datos)) as conexion:
+            conexion.execute(
+                "INSERT INTO bocetos (identificador, descripcion) VALUES ('4', 'Conservar boceto')"
+            )
+            conexion.commit()
+        migrate(self.carpeta_datos)
+        with closing(sqlite3.connect(self.ruta_base_datos)) as conexion:
+            self.assertEqual(
+                conexion.execute(
+                    "SELECT identificador, descripcion FROM bocetos"
+                ).fetchall(),
+                [("4", "Conservar boceto")],
+            )
+            with self.assertRaises(sqlite3.IntegrityError):
+                conexion.execute(
+                    "INSERT INTO recursos (identificador, nombre, tipo) "
+                    "VALUES ('1', 'Sin asociación', 'Obra fisica')"
+                )
 
 
 if __name__ == "__main__":

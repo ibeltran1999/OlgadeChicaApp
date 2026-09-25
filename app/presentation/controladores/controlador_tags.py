@@ -5,12 +5,18 @@ from flask import Blueprint, jsonify, render_template, request
 from app.application.registrar_tag import RegistrarTag
 
 
-def crear_controlador_tags(gestor: RegistrarTag) -> Blueprint:
+def crear_controlador_tags(gestor: RegistrarTag, repositorio=None) -> Blueprint:
     controlador = Blueprint(
         "tags",
         __name__,
         template_folder="../templates",
     )
+
+    @controlador.get("/tags")
+    def listar():
+        return render_template(
+            "tags/listado.html", tags=repositorio.listar() if repositorio else []
+        )
 
     @controlador.get("/tags/nueva")
     def mostrar_formulario() -> str:

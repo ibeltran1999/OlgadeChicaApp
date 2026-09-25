@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursos</title><link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"></head><body><main class="contenedor">
+<nav class="acciones-principales"><a href="/">Inicio</a><a href="{{ url_for('recursos.listar') }}">Consultar recursos</a><a href="{{ url_for('recursos.nuevo') }}">Registrar recurso</a></nav>
+
+<h1>Recurso {{ recurso.identificador }} — {{ recurso.nombre }}</h1><p>Tipo: {{ recurso.tipo }}</p>
+<h2>Elementos relacionados</h2>
+{% if recurso.filmina %}<p><a href="{{ url_for('filminas.consultar_filmina', identificador=recurso.filmina.identificador) }}">Filmina {{ recurso.filmina.identificador }} — {{ recurso.filmina.descripcion }}</a></p>{% endif %}
+{% if recurso.boceto %}<p><a href="{{ url_for('bocetos.detalle', identificador=recurso.boceto.identificador) }}">Boceto {{ recurso.boceto.identificador }} — {{ recurso.boceto.descripcion }}</a></p>{% endif %}
+{% if recurso.archivo %}
+<h2>Archivo digital</h2><p>{{ recurso.archivo.nombre }}</p>
+{% set archivo_url = url_for('recursos.archivo', identificador=recurso.identificador) %}
+{% if recurso.archivo.tipo.value in ['PNG', 'JPG'] %}<img class="preview-imagen" src="{{ archivo_url }}" alt="Archivo del recurso {{ recurso.identificador }}">
+{% elif recurso.archivo.tipo.value == 'PDF' %}<iframe class="preview-pdf" src="{{ archivo_url }}" title="Vista previa del recurso"></iframe>
+{% else %}<p>Descarga el archivo CR2 para visualizarlo.</p>{% endif %}
+<p><a href="{{ url_for('recursos.archivo', identificador=recurso.identificador, descargar=1) }}">Descargar archivo</a></p>
+{% else %}<p>Sin archivo digital</p>{% endif %}
+</main></body></html>

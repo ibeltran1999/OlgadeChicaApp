@@ -12,6 +12,10 @@
 <body>
     <main class="contenedor">
         <h1>Crear tag</h1>
+        <nav class="acciones-principales" aria-label="Navegación">
+            <a class="boton" href="/">Inicio</a>
+            <a class="boton" href="{{ url_for('tags.listar') }}">Consultar tags</a>
+        </nav>
 
         <form method="post" action="/tags">
             <label for="identificador">Identificador</label>

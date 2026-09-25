@@ -1,3 +1,8 @@
+from app.application.registrar_recurso import RegistrarRecurso
+from app.persistence.repositorio_recursos import RepositorioRecursosSQLAlchemy
+from app.presentation.controladores.controlador_recursos import (
+    crear_controlador_recursos,
+)
 from app.application.registrar_bocetos import RegistrarBocetos
 from app.persistence.repositorio_bocetos import RepositorioBocetosSQLAlchemy
 from app.presentation.controladores.controlador_bocetos import crear_controlador_bocetos
@@ -59,6 +64,16 @@ def create_app() -> Flask:
     gestor_tags = RegistrarTag(repositorio_tags)
     repositorio_bocetos = RepositorioBocetosSQLAlchemy(session)
     gestor_bocetos = RegistrarBocetos(repositorio_bocetos, generador, almacenamiento)
+    repositorio_recursos = RepositorioRecursosSQLAlchemy(session)
+    app.register_blueprint(
+        crear_controlador_recursos(
+            RegistrarRecurso(repositorio_recursos, generador, almacenamiento),
+            repositorio_recursos,
+            repositorio,
+            repositorio_bocetos,
+            carpeta_storage,
+        )
+    )
     app.register_blueprint(
         crear_controlador_bocetos(
             gestor_bocetos,
@@ -74,7 +89,7 @@ def create_app() -> Flask:
             gestor, repositorio_tags, repositorio, carpeta_storage
         )
     )
-    app.register_blueprint(crear_controlador_tags(gestor_tags))
+    app.register_blueprint(crear_controlador_tags(gestor_tags, repositorio_tags))
 
     @app.get("/")
     def index() -> str:

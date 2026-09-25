@@ -406,3 +406,30 @@ conservando las filminas existentes. El migrador crea un respaldo previo.
 Las pruebas de HU02 cubren el gestor aislado y el flujo con SQLite, incluyendo
 registro sin fecha ni archivo, tags, asociaciones, descarga, consulta tras
 reiniciar, concurrencia y actualización desde el esquema anterior.
+
+## HU03: registro y consulta de recursos
+
+Desde el inicio puedes **Registrar un recurso** o **Consultar recursos**.
+Indica un nombre, selecciona **Obra física** o **Material físico consultable en
+la BLAA**, y asocia una filmina, un boceto o ambos. La regla RN-07 impide guardar
+un recurso sin asociación. Puedes adjuntar opcionalmente JPG, PNG, PDF o CR2.
+
+El listado sigue el orden de guardado. El detalle permite consultar los datos,
+abrir los elementos relacionados y visualizar o descargar el archivo.
+La numeración persiste al reiniciar y evita duplicados entre registros simultáneos.
+
+La revisión `20260925_0003` añade la tabla de recursos sin modificar las filminas
+ni los bocetos existentes. Para actualizar otra instalación, detén el servidor
+y ejecuta `python -m app.migration.comando` antes de iniciarlo.
+
+Pruebas unitarias del gestor:
+
+```bash
+python -m unittest tests.unit.application.test_registrar_recurso -v
+```
+
+Pruebas funcionales:
+
+```bash
+python -m unittest tests.functional.test_recursos -v
+```

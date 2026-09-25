@@ -50,6 +50,7 @@ def main() -> None:
                     "filmina_tags",
                     "tags",
                     "bocetos",
+                    "recursos",
                     "boceto_tags",
                     "boceto_filminas",
                 }

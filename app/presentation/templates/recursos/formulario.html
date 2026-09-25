@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursos</title><link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"></head><body><main class="contenedor">
+<nav class="acciones-principales"><a href="/">Inicio</a><a href="{{ url_for('recursos.listar') }}">Consultar recursos</a><a href="{{ url_for('recursos.nuevo') }}">Registrar recurso</a></nav>
+
+<h1>Registrar un recurso</h1>
+{% if error %}<p role="alert">{{ error }}</p><p>Si adjuntaste un archivo, vuelve a seleccionarlo.</p>{% endif %}
+<form method="post" action="{{ url_for('recursos.registrar') }}" enctype="multipart/form-data">
+<label for="nombre">Nombre</label><input id="nombre" name="nombre" required value="{{ datos.get('nombre', '') }}">
+<label for="tipo">Tipo de recurso</label><select id="tipo" name="tipo" required>
+{% for tipo in tipos %}<option value="{{ tipo.value }}" {% if datos.get('tipo') == tipo.value %}selected{% endif %}>{{ 'Obra física' if tipo.name == 'OBRA_FISICA' else tipo.value }}</option>{% endfor %}</select>
+<p>Selecciona al menos una filmina o un boceto. Puedes asociar ambos.</p>
+<label for="filmina">Filmina</label><select id="filmina" name="filmina_identificador"><option value="">Sin filmina</option>
+{% for elemento in filminas %}<option value="{{ elemento.identificador }}" {% if datos.get('filmina_identificador') == elemento.identificador %}selected{% endif %}>{{ elemento.identificador }} — {{ elemento.descripcion }}</option>{% endfor %}</select>
+<label for="boceto">Boceto</label><select id="boceto" name="boceto_identificador"><option value="">Sin boceto</option>
+{% for elemento in bocetos %}<option value="{{ elemento.identificador }}" {% if datos.get('boceto_identificador') == elemento.identificador %}selected{% endif %}>{{ elemento.identificador }} — {{ elemento.descripcion }}</option>{% endfor %}</select>
+<label for="archivo">Archivo digital (opcional)</label><input type="file" id="archivo" name="archivo" accept=".jpg,.png,.pdf,.cr2">
+<button type="submit">Guardar recurso</button></form>
+</main></body></html>

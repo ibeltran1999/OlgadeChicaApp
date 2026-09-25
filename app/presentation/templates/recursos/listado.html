@@ -1,0 +1,8 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursos</title><link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"></head><body><main class="contenedor">
+<nav class="acciones-principales"><a href="/">Inicio</a><a href="{{ url_for('recursos.listar') }}">Consultar recursos</a><a href="{{ url_for('recursos.nuevo') }}">Registrar recurso</a></nav>
+
+<h1>Recursos registrados</h1>
+{% for recurso in recursos %}<article><h2><a href="{{ url_for('recursos.detalle', identificador=recurso.identificador) }}">{{ recurso.identificador }} — {{ recurso.nombre }}</a></h2><p>{{ recurso.tipo }}</p></article>
+{% else %}<p>Aún no hay recursos registrados.</p>{% endfor %}
+</main></body></html>
