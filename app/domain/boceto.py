@@ -7,5 +7,6 @@ class Boceto:
         self.archivo = None
     
     def agregar_archivo(self, archivo):
+        self.archivo = archivo
         pass
 
